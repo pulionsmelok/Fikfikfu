@@ -1007,25 +1007,35 @@ class TelegramApi {
         timeout: 25,
         allowed_updates: JSON.stringify(["message", "edited_message", "channel_post", "callback_query", "message_reaction", "my_chat_member", "chat_member", "chat_join_request"]),
       });
+      // Dispatch every update independently. Do not await one event before
+      // converting/dispatching the next one: a slow command (for example /hi
+      // while it is waiting for an API response) must never hold up newer
+      // commands from the same chat or another chat.
       for (const update of updates) {
         this.offset = Math.max(this.offset, Number(update.update_id) + 1);
-        try {
-          const event = await this.eventFromUpdate(update);
+        Promise.resolve().then(async () => {
+          try {
+            const event = await this.eventFromUpdate(update);
+            if (!event) return;
 
-          if (event) {
-            Promise.resolve(callback(null, event)).catch((err) => {
-              try {
-                console.error("[TELEGRAM EVENT HANDLER]", err?.stack || err);
-              } catch (_) {}
-            });
-          }
-        } catch (err) {
-          Promise.resolve(callback(err)).catch((callbackErr) => {
+            // Deliberately do not await the command handler here. Each update
+            // owns its own promise so long-running commands cannot serialize
+            // the Telegram update stream.
+            return callback(null, event);
+          } catch (err) {
             try {
-              console.error("[TELEGRAM CALLBACK ERROR]", callbackErr?.stack || callbackErr);
-            } catch (_) {}
-          });
-        }
+              await callback(err);
+            } catch (callbackErr) {
+              try {
+                console.error("[TELEGRAM CALLBACK ERROR]", callbackErr?.stack || callbackErr);
+              } catch (_) {}
+            }
+          }
+        }).catch((err) => {
+          try {
+            console.error("[TELEGRAM EVENT DISPATCH]", err?.stack || err);
+          } catch (_) {}
+        });
       }
     } catch (err) {
       await callback(err);
