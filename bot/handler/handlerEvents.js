@@ -286,22 +286,48 @@ module.exports = function (api, threadModel, userModel, dashBoardModel, globalMo
 		let threadData = global.db.allThreadData.find(t => t.threadID == threadID);
 		let userData = global.db.allUserData.find(u => u.userID == senderID);
 
-		if (!userData && !isNaN(senderID))
-			userData = await usersData.create(senderID);
+		// Telegram service events (especially bot removal) can arrive after the bot
+		// has lost access to the group. Do not let database/thread-info creation
+		// block the event handlers in that case.
+		if (!userData && !isNaN(senderID)) {
+			try {
+				userData = await usersData.create(senderID);
+			} catch (err) {
+				userData = { userID: String(senderID), name: event.from?.first_name || event.from?.username || "Unknown", banned: { status: false }, data: {} };
+			}
+		}
 
 		if (!threadData && !isNaN(threadID)) {
-			if (global.temp.createThreadDataError.includes(threadID))
-				return;
-			threadData = await threadsData.create(threadID);
-			global.db.receivedTheFirstMessage[threadID] = true;
+			if (!global.temp.createThreadDataError.includes(threadID)) {
+				try {
+					threadData = await threadsData.create(threadID);
+					global.db.receivedTheFirstMessage[threadID] = true;
+				} catch (err) {
+					if (event.type !== "event") {
+						global.temp.createThreadDataError.push(threadID);
+						throw err;
+					}
+				}
+			}
 		}
-		else {
-			if (
-				autoRefreshThreadInfoFirstTime === true
-				&& !global.db.receivedTheFirstMessage[threadID]
-			) {
+
+		if (!threadData && event.type === "event") {
+			threadData = {
+				threadID: String(threadID),
+				threadName: event.chat?.title || event.raw?.chat?.title || "Group",
+				name: event.chat?.title || event.raw?.chat?.title || "Group",
+				adminIDs: [],
+				settings: {},
+				data: { lang: config.language || "en" },
+				banned: { status: false }
+			};
+		}
+		else if (threadData) {
+			if (autoRefreshThreadInfoFirstTime === true && !global.db.receivedTheFirstMessage[threadID]) {
 				global.db.receivedTheFirstMessage[threadID] = true;
-				await threadsData.refreshInfo(threadID);
+				try { await threadsData.refreshInfo(threadID); } catch (err) {
+					if (event.type !== "event") throw err;
+				}
 			}
 		}
 
