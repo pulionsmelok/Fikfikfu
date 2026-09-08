@@ -28,6 +28,13 @@ module.exports = async function (usersData, threadsData, event) {
 			}
 		}
 		catch (err) {
+			// Telegram returns 403 when the bot has been kicked/removed from a group.
+			// This is an expected service-event condition; do not poison the thread
+			// cache or crash the event pipeline.
+			const description = String(err?.response?.description || err?.message || "");
+			const isKicked403 = Number(err?.response?.error_code || err?.code) === 403
+				&& /bot was kicked|bot was removed|chat not found/i.test(description);
+			if (isKicked403) return;
 			if (err.name != "DATA_ALREADY_EXISTS") {
 				global.temp.createThreadDataError.push(threadID);
 				log.err("DATABASE", getText("handlerCheckData", "cantCreateThread", threadID), err);
