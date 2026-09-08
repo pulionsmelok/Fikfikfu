@@ -255,6 +255,25 @@ module.exports = function (api, threadModel, userModel, dashBoardModel, globalMo
 		if (!threadID)
 			return;
 
+		// Telegram can deliver the same join/leave as both a service message
+		// (new_chat_members / left_chat_member) and a chat_member update.
+		// Without a short dedupe window, event commands such as welcome/leave
+		// run twice and send duplicate messages.
+		if (event.type === "event" && (event.logMessageType === "log:subscribe" || event.logMessageType === "log:unsubscribe")) {
+			global.temp.telegramEventDedupe = global.temp.telegramEventDedupe || new Map();
+			const participant = event.logMessageType === "log:subscribe"
+				? (event.logMessageData?.addedParticipants || []).map(p => String(p?.userFbId || p?.id || "")).filter(Boolean).sort().join(",")
+				: String(event.logMessageData?.leftParticipantFbId || event.left_chat_member?.id || "");
+			const dedupeKey = `${String(threadID)}:${event.logMessageType}:${participant}`;
+			const now = Date.now();
+			const previous = global.temp.telegramEventDedupe.get(dedupeKey) || 0;
+			if (now - previous < 5000) return;
+			global.temp.telegramEventDedupe.set(dedupeKey, now);
+			for (const [key, time] of global.temp.telegramEventDedupe) {
+				if (now - time > 10000) global.temp.telegramEventDedupe.delete(key);
+			}
+		}
+
 		const senderID = event.userID || event.senderID || event.author;
 		const panelSettings = config.settingPanel || {};
 		const botAdminsForPanel = (config.adminBot || []).map(String);
