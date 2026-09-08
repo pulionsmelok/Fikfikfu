@@ -1,100 +1,48 @@
 module.exports = {
 	config: {
-        name: "autoUpdateThreadInfo",
-        version: "1.4",
-        author: "SK-SIDDIK-KHAN",
-        usePrefix: true,
-        category: "events",
-    },
+		name: "autoUpdateThreadInfo",
+		version: "2.0-TELEGRAM",
+		author: "SK-SIDDIK-KHAN",
+		usePrefix: true,
+		category: "events"
+	},
 
-	onStart: async ({ threadsData, event, api }) => {
-		const types = ["log:subscribe", "log:unsubscribe", "log:thread-admins", "log:thread-name", "log:thread-image", "log:thread-icon", "log:thread-color", "log:user-nickname"];
-		if (!types.includes(event.logMessageType))
-			return;
-		const { threadID, logMessageData, logMessageType } = event;
-		const threadInfo = await threadsData.get(event.threadID);
-		
-		let { members, adminIDs } = threadInfo;
-		switch (logMessageType) {
-			case "log:subscribe":
-				return async function () {
-					const { addedParticipants } = event.logMessageData;
-					const threadInfo_Fca = await api.getThreadInfo(threadID);
-					threadsData.refreshInfo(threadID, threadInfo_Fca);
+	onStart: async ({ threadsData, event }) => {
+		const type = event.logMessageType;
+		if (type !== "log:subscribe" && type !== "log:unsubscribe") return;
 
-					for (const user of addedParticipants) {
-						let oldData = members.find(member => member.userID === user.userFbId);
-						const isOldMember = oldData ? true : false;
-						oldData = oldData || {};
-						const { userInfo, nicknames } = threadInfo_Fca;
+		return async function () {
+			try {
+				const threadID = String(event.threadID);
+				let threadInfo = global.db.allThreadData.find(t => String(t.threadID) === threadID);
+				if (!threadInfo) {
+					try { threadInfo = await threadsData.get(threadID); } catch { return; }
+				}
+				const members = Array.isArray(threadInfo.members) ? threadInfo.members : [];
 
-						const newData = {
-							userID: user.userFbId,
-							name: user.fullName,
-							gender: userInfo.find(u => u.id == user.userFbId)?.gender,
-							nickname: nicknames[user.userFbId] || null,
+				if (type === "log:subscribe") {
+					for (const user of event.logMessageData?.addedParticipants || []) {
+						const id = String(user.userFbId);
+						const index = members.findIndex(m => String(m.userID) === id);
+						const data = {
+							userID: id,
+							name: user.fullName || user.userFbName || `User ${id}`,
+							nickname: user.username ? `@${user.username}` : null,
 							inGroup: true,
-							count: oldData.count || 0
+							count: index >= 0 ? (members[index].count || 0) : 0
 						};
-
-						if (!isOldMember)
-							members.push(newData);
-						else {
-							const index = members.findIndex(member => member.userID === user.userFbId);
-							members[index] = newData;
-						}
+						if (index >= 0) members[index] = { ...members[index], ...data };
+						else members.push(data);
 					}
-					await threadsData.set(threadID, members, "members");
-				};
-
-			case "log:unsubscribe":
-				return async function () {
-					const oldData = members.find(member => member.userID === logMessageData.leftParticipantFbId);
-					if (oldData) {
-						oldData.inGroup = false;
-						await threadsData.set(threadID, members, "members");
-					}
-				};
-
-			case "log:thread-admins":
-				return async function () {
-					if (logMessageData.ADMIN_EVENT == "add_admin")
-						adminIDs.push(logMessageData.TARGET_ID);
-					else
-						adminIDs = adminIDs.filter(uid => uid != logMessageData.TARGET_ID);
-					adminIDs = [...new Set(adminIDs)];
-					await threadsData.set(threadID, adminIDs, "adminIDs");
-				};
-
-			case "log:thread-name":
-				return async function () {
-					const threadName = logMessageData.name;
-					await threadsData.set(threadID, threadName, "threadName");
-				};
-			case "log:thread-image":
-				return async function () {
-					await threadsData.set(threadID, logMessageData.url, "imageSrc");
-				};
-			case "log:thread-icon":
-				return async function () {
-					await threadsData.set(threadID, logMessageData.thread_icon, "emoji");
-				};
-			case "log:thread-color":
-				return async function () {
-					await threadsData.set(threadID, logMessageData.theme_id, "threadThemeID");
-				};
-			case "log:user-nickname":
-				return async function () {
-					const { participant_id, nickname } = logMessageData;
-					const oldData = members.find(member => member.userID === participant_id);
-					if (oldData) {
-						oldData.nickname = nickname;
-						await threadsData.set(threadID, members, "members");
-					}
-				};
-			default:
-				return null;
-		}
-
+				} else {
+					const id = String(event.logMessageData?.leftParticipantFbId || event.left_chat_member?.id || "");
+					const member = members.find(m => String(m.userID) === id);
+					if (member) member.inGroup = false;
+				}
+				await threadsData.set(threadID, members, "members");
+			} catch (err) {
+				console.log("[autoUpdateThreadInfo]", err?.message || err);
+			}
+		};
 	}
 };
