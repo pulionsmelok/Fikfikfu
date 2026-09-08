@@ -86,34 +86,39 @@ module.exports = {
 
   onCallback: async function ({
     bot,
-    event,
-    args
+    event
   }) {
+    // Telegram sends the full callback_data as event.data/callbackData.
+    // The generic callback resolver may include the command name in args,
+    // so parse the setpf payload directly to avoid shifting the arguments.
+    const data = String(event.callbackData || event.data || "").trim();
+    const parts = data.split(":");
 
-    const action = String(args[0] || "");
-    const userId = String(args[1] || "");
+    if (parts.length < 3 || parts[0].toLowerCase() !== "setpf") {
+      return;
+    }
 
-    if (
-      !event.senderID ||
-      String(event.senderID) !== userId
-    ) {
-      return bot.answerCallbackQuery(
-        event.callbackQueryID,
-        {
-          text: "❌ You are not allowed to use this button.",
-          show_alert: true
-        }
-      );
+    const action = parts[1];
+    const userId = String(parts[2] || "");
+    const senderId = String(event.senderID || event.userID || event.from?.id || "");
+
+    const answer = async (text = "", showAlert = false) => {
+      if (!event.callbackQueryID || !bot?.answerCallbackQuery) return;
+      try {
+        await bot.answerCallbackQuery(event.callbackQueryID, text, showAlert);
+      } catch (err) {
+        // Telegram may reject a second callback answer if the handler/router
+        // already acknowledged it. This must not stop the actual action.
+        console.warn("SET PREFIX callback answer:", err.message || err);
+      }
+    };
+
+    if (!senderId || senderId !== userId) {
+      return answer("❌ You are not allowed to use this button.", true);
     }
 
     if (action === "cancel") {
-
-      await bot.answerCallbackQuery(
-        event.callbackQueryID,
-        {
-          text: "❌ Prefix change cancelled."
-        }
-      );
+      await answer("❌ Prefix change cancelled.");
 
       return bot.editMessageText(
         event.threadID,
@@ -124,118 +129,57 @@ module.exports = {
       );
     }
 
-    if (action === "confirm") {
+    if (action !== "confirm") {
+      return answer("❌ Invalid button action.", true);
+    }
 
-      let newPrefix = "";
+    let newPrefix = "";
+    try {
+      // Prefix was encoded when the button was created. Keep ':' safe too.
+      newPrefix = decodeURIComponent(parts.slice(3).join(":"));
+    } catch (err) {
+      return answer("❌ Invalid prefix.", true);
+    }
 
+    newPrefix = String(newPrefix || "").trim();
+
+    if (!newPrefix || newPrefix.length > 10) {
+      return answer(
+        newPrefix ? "❌ Prefix must be 10 characters or less." : "❌ Invalid prefix.",
+        true
+      );
+    }
+
+    const configPath = global.client?.dirConfig || path.join(process.cwd(), "config.json");
+
+    try {
+      let configData;
       try {
-        newPrefix = decodeURIComponent(
-          args.slice(2).join(":") || ""
-        );
-      } catch {
-        return bot.answerCallbackQuery(
-          event.callbackQueryID,
-          {
-            text: "❌ Invalid prefix.",
-            show_alert: true
-          }
-        );
+        configData = fs.readJsonSync(configPath);
+      } catch (readErr) {
+        configData = { ...(global.GoatBot.config || {}) };
       }
 
-      if (!newPrefix) {
-        return bot.answerCallbackQuery(
-          event.callbackQueryID,
-          {
-            text: "❌ Invalid prefix.",
-            show_alert: true
-          }
-        );
-      }
+      configData.prefix = newPrefix;
+      fs.writeJsonSync(configPath, configData, { spaces: 2 });
 
-      if (newPrefix.length > 10) {
-        return bot.answerCallbackQuery(
-          event.callbackQueryID,
-          {
-            text: "❌ Prefix must be 10 characters or less.",
-            show_alert: true
-          }
-        );
-      }
+      // Update the live config immediately; no restart is required.
+      global.GoatBot.config.prefix = newPrefix;
 
-      const configPath =
-        global.client?.dirConfig ||
-        path.join(
-          process.cwd(),
-          "config.json"
-        );
+      await answer(`✅ Prefix changed to ${newPrefix}`);
 
-      try {
-
-        let configData = {};
-
-        try {
-          configData = JSON.parse(
-            fs.readFileSync(
-              configPath,
-              "utf8"
-            )
-          );
-        } catch {
-          configData =
-            global.GoatBot.config;
-        }
-
-        configData.prefix = newPrefix;
-
-        fs.writeFileSync(
-          configPath,
-          JSON.stringify(
-            configData,
-            null,
-            2
-          ),
-          "utf8"
-        );
-
-        global.GoatBot.config.prefix =
-          newPrefix;
-
-        Object.assign(
-          global.GoatBot.config,
-          configData
-        );
-
-        await bot.answerCallbackQuery(
-          event.callbackQueryID,
-          {
-            text:
-              `✅ Prefix changed to ${newPrefix}`
-          }
-        );
-
-        return bot.editMessageText(
-          event.threadID,
-          event.messageID,
-          "━━━━━━━━━━━━━━━━\n" +
-          `✅ 𝐒𝐲𝐬𝐭𝐞𝐦 𝐩𝐫𝐞𝐟𝐢𝐱 𝐡𝐚𝐬 𝐛𝐞𝐞𝐧 𝐜𝐡𝐚𝐧𝐠𝐞𝐝 𝐭𝐨 : ${newPrefix}\n` +
-          "━━━━━━━━━━━━━━━━"
-        );
-
-      } catch (err) {
-
-        console.error(
-          "❌ SET PREFIX ERROR:",
-          err
-        );
-
-        return bot.answerCallbackQuery(
-          event.callbackQueryID,
-          {
-            text: "❌ Failed to change prefix.",
-            show_alert: true
-          }
-        );
-      }
+      return bot.editMessageText(
+        event.threadID,
+        event.messageID,
+        "━━━━━━━━━━━━━━━━\n" +
+        `✅ 𝐒𝐲𝐬𝐭𝐞𝐦 𝐩𝐫𝐞𝐟𝐢𝐱 𝐡𝐚𝐬 𝐛𝐞𝐞𝐧 𝐜𝐡𝐚𝐧𝐠𝐞𝐝 𝐭𝐨 : ${newPrefix}\n` +
+        "━━━━━━━━━━━━━━━━"
+      );
+    } catch (err) {
+      console.error("❌ SET PREFIX ERROR:", err);
+      await answer("❌ Failed to change prefix.", true);
+      return;
     }
   }
+
 };
