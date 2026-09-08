@@ -197,18 +197,14 @@ module.exports = {
 
     onCallback: async function ({ event, api, ctx }) {
         const data = event.data;
-        const chatId = event.message.chat.id;
-        const msgId = event.message.message_id;
-
-        try {
-            await ctx.answerCbQuery();
-        } catch {}
+        const chatId = String(event.threadID || event.message?.chat?.id || event.chat?.id);
+        const msgId = event.messageID || event.message?.message_id;
 
         if (data === "quiz_help") {
             try {
                 await ctx.answerCbQuery(
                     `Button চাপুন! 120s সময়! ভুল দিলে উত্তর দেখাবে না!`,
-                    { show_alert: true }
+                    true
                 );
             } catch {}
 
