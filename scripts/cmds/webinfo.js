@@ -6,9 +6,10 @@ module.exports = {
   config: {
     name: "webinfo",
     version: "2.0",
-    author: "MOHAMMAD AKASH",
+    author: "SK-SIDDIK-KHAN",
     countDown: 5,
     role: 0,
+    usePrefix: true,
     shortDescription: { en: "Get detailed information about any website" },
     description: {
       en: "Fetch full info like IP, SSL, Server, Response, Country from any website"
@@ -26,7 +27,11 @@ module.exports = {
   },
 
   onStart: async function ({ message, args, getLang }) {
-    if (!args[0]) return message.reply(getLang("missing"));
+    if (!args[0]) {
+      return message.reply(getLang("missing"));
+    }
+
+    let loadingMsg;
 
     try {
       let input = args[0].trim();
@@ -40,7 +45,7 @@ module.exports = {
       const domain = input;
       const url = `https://${domain}`;
 
-      await message.reply(getLang("loading", domain));
+      loadingMsg = await message.reply(getLang("loading", domain));
 
       let ip = "N/A";
 
@@ -68,6 +73,7 @@ module.exports = {
           );
 
           req.on("error", () => resolve());
+
           req.on("timeout", () => {
             req.destroy();
             resolve();
@@ -95,13 +101,16 @@ module.exports = {
 
       let country = "N/A";
 
-      try {
-        const geo = await axios.get(`https://ipapi.co/${ip}/json/`, {
-          timeout: 10000
-        });
+      if (ip !== "N/A") {
+        try {
+          const geo = await axios.get(
+            `https://ipapi.co/${ip}/json/`,
+            { timeout: 10000 }
+          );
 
-        country = geo.data.country_name || "N/A";
-      } catch {}
+          country = geo.data.country_name || "N/A";
+        } catch {}
+      }
 
       const output =
         "🌐  Wᴇʙsɪᴛᴇ Iɴғᴏ\n\n" +
@@ -112,10 +121,23 @@ module.exports = {
         `🧠  Sᴇʀᴠᴇʀ : ${server}\n` +
         `🌍  Cᴏᴜɴᴛʀʏ : ${country}`;
 
+      if (loadingMsg && loadingMsg.messageID) {
+        try {
+          await message.unsend(loadingMsg.messageID);
+        } catch {}
+      }
+
       return message.reply(output);
 
     } catch (err) {
       console.error(err);
+
+      if (loadingMsg && loadingMsg.messageID) {
+        try {
+          await message.unsend(loadingMsg.messageID);
+        } catch {}
+      }
+
       return message.reply(getLang("error"));
     }
   }
