@@ -960,9 +960,20 @@ class TelegramApi {
         this.offset = Math.max(this.offset, Number(update.update_id) + 1);
         try {
           const event = await this.eventFromUpdate(update);
-          if (event) await callback(null, event);
+          if (event) {
+            // Do not block Telegram polling on a command handler/message reply.
+            // Each update is dispatched independently so later updates can be
+            // processed even while an earlier command is still running.
+            Promise.resolve()
+              .then(() => callback(null, event))
+              .catch(err => {
+                try { callback(err); } catch (_) {}
+              });
+          }
         } catch (err) {
-          await callback(err);
+          Promise.resolve()
+            .then(() => callback(err))
+            .catch(() => {});
         }
       }
     } catch (err) {

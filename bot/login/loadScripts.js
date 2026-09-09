@@ -144,7 +144,8 @@ module.exports = async function (api, threadModel, userModel, dashBoardModel, gl
 
 				for (const handlerName of [
 					"run", "onStart", "start", "prefix", "onLoad",
-					"onReply", "reply", "onChat", "chat", "handleEvent", "noPrefix"
+					"onReply", "reply", "onChat", "chat", "onFirstChat",
+					"onReaction", "onEvent", "onAnyEvent", "handleEvent", "noPrefix"
 				]) {
 					if (command[handlerName] != null && typeof command[handlerName] !== "function")
 						throw new Error(`${handlerName} of ${text} must be a function`);
