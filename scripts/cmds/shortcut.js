@@ -11,7 +11,8 @@ module.exports = {
         usePrefix: true,
         description: {
         		vi: 'Thêm một phím tắt cho tin nhắn trong nhóm chat của bạn',
-        		en: 'Add a shortcut for your message in group chat'
+        		en: 'Add a shortcut for your message in group chat',
+        		bn: 'আপনার গ্রুপ চ্যাটের মেসেজের জন্য একটি শর্টকাট যোগ করুন'
         	},
         category: 'custom',
         guide: {
@@ -39,6 +40,19 @@ module.exports = {
         			+ '\n   {pn} list start <keyword>: view your shortcuts list start with <keyword>'
         			+ '\n   {pn} list end <keyword>: view your shortcuts list end with <keyword>'
         			+ '\n   {pn} list contain <keyword>: view your shortcuts list contain <keyword>'
+        		,
+        		bn: '   {pn} add <word> => <content>: আপনার জন্য একটি শর্টকাট যোগ করুন (সংযুক্তি যোগ করতে ফাইলসহ একটি মেসেজ পাঠাতে বা তার রিপ্লাই দিতে পারেন)'
+        			+ '\n   উদাহরণ:\n    {pn} add hi => সবাইকে শুভেচ্ছা'
+        			+ '\n'
+        			+ '\n   {pn} del <word>: একটি শর্টকাট মুছে ফেলুন'
+        			+ '\n   উদাহরণ:\n    {pn} del hi'
+        			+ '\n'
+        			+ '\n   {pn} [remove | reset]: আপনার গ্রুপ চ্যাটের সব শর্টকাট মুছে ফেলুন'
+        			+ '\n'
+        			+ '\n   {pn} list: আপনার সব শর্টকাটের তালিকা দেখুন'
+        			+ '\n   {pn} list start <keyword>: নির্দিষ্ট <keyword> দিয়ে শুরু হওয়া শর্টকাটের তালিকা দেখুন'
+        			+ '\n   {pn} list end <keyword>: নির্দিষ্ট <keyword> দিয়ে শেষ হওয়া শর্টকাটের তালিকা দেখুন'
+        			+ '\n   {pn} list contain <keyword>: নির্দিষ্ট <keyword> থাকা শর্টকাটের তালিকা দেখুন'
         	},
     },
 
@@ -90,6 +104,30 @@ module.exports = {
 			onlyAdminRemoveAll: 'Only administrators can remove all shortcuts in the group chat',
 			confirmRemoveAll: 'Are you sure you want to remove all shortcuts in this group chat? (react to this message to confirm)',
 			removedAll: 'Removed all shortcuts in your group chat'
+		},
+		bn: {
+			missingContent: 'অনুগ্রহ করে মেসেজের বিষয়বস্তু লিখুন',
+			shortcutExists: 'শর্টকাট "%1" ইতোমধ্যেই রয়েছে। শর্টকাটের বিষয়বস্তু পরিবর্তন করতে এই মেসেজে যেকোনো রিঅ্যাকশন দিন',
+			shortcutExistsByOther: 'শর্টকাট %1 অন্য একজন সদস্য ইতোমধ্যেই যোগ করেছেন। অনুগ্রহ করে অন্য একটি কীওয়ার্ড ব্যবহার করুন',
+			added: 'শর্টকাট %1 => %2 যোগ করা হয়েছে',
+			addedAttachment: ' এর সঙ্গে %1টি সংযুক্তি যোগ করা হয়েছে',
+			missingKey: 'আপনি যে শর্টকাটটি মুছতে চান, অনুগ্রহ করে তার কীওয়ার্ড লিখুন',
+			notFound: 'আপনার গ্রুপ চ্যাটে %1 কীওয়ার্ডের কোনো শর্টকাট পাওয়া যায়নি',
+			onlyAdmin: 'শুধুমাত্র অ্যাডমিনরা অন্য সদস্যদের শর্টকাট মুছে ফেলতে পারবেন',
+			deleted: 'শর্টকাট %1 মুছে ফেলা হয়েছে',
+			empty: 'আপনার গ্রুপ চ্যাটে এখনো কোনো শর্টকাট যোগ করা হয়নি',
+			message: 'মেসেজ',
+			attachment: 'সংযুক্তি',
+			list: 'আপনার শর্টকাটের তালিকা',
+			listWithTypeStart: 'আপনার গ্রুপের শর্টকাটের তালিকা ("%1" দিয়ে শুরু)',
+			listWithTypeEnd: 'আপনার গ্রুপের শর্টকাটের তালিকা ("%1" দিয়ে শেষ)',
+			listWithTypeContain: 'আপনার গ্রুপের শর্টকাটের তালিকা ("%1" থাকা)',
+			listWithTypeStartNot: 'আপনার গ্রুপে "%1" দিয়ে শুরু হওয়া কোনো শর্টকাট নেই',
+			listWithTypeEndNot: 'আপনার গ্রুপে "%1" দিয়ে শেষ হওয়া কোনো শর্টকাট নেই',
+			listWithTypeContainNot: 'আপনার গ্রুপে "%1" থাকা কোনো শর্টকাট নেই',
+			onlyAdminRemoveAll: 'শুধুমাত্র অ্যাডমিনরা গ্রুপ চ্যাটের সব শর্টকাট মুছে ফেলতে পারবেন',
+			confirmRemoveAll: 'আপনি কি নিশ্চিত যে এই গ্রুপ চ্যাটের সব শর্টকাট মুছে ফেলতে চান? (নিশ্চিত করতে এই মেসেজে রিঅ্যাকশন দিন)',
+			removedAll: 'আপনার গ্রুপ চ্যাটের সব শর্টকাট মুছে ফেলা হয়েছে'
 		}
 	},
 
