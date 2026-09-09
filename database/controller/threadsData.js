@@ -31,7 +31,7 @@ const { creatingThreadData } = global.client.database;
 module.exports = async function (databaseType, threadModel, api, fakeGraphql) {
 	let Threads = [];
 	const pathThreadsData = path.join(process.env.JSON_DATA_DIR || path.join(__dirname, "..", "data"), "threadsData.json");
-	mkdirpSync(path.dirname(const));
+	mkdirpSync(path.dirname(pathThreadsData));
 
 	switch (databaseType) {
 		case "mongodb": {
