@@ -11,7 +11,8 @@ module.exports = {
         usePrefix: true,
         description: {
         		vi: "Chỉnh sửa nội dung tin nhắn chào mừng thành viên mới tham gia vào nhóm chat của bạn",
-        		en: "Edit welcome message content when new member join your group chat"
+        		en: "Edit welcome message content when new member join your group chat",
+        		bn: "আপনার গ্রুপে নতুন সদস্য যোগ দিলে স্বাগত বার্তার বিষয়বস্তু সম্পাদনা করুন"
         	},
         category: "custom",
         guide: {
@@ -48,6 +49,20 @@ module.exports = {
         			attachment: {
         				[`${__dirname}/assets/guide/setwelcome/setwelcome_en_1.png`]: "https://i.ibb.co/vsCz0ks/setwelcome-en-1.png"
         			}
+        		},
+        		bn: {
+        			body: "   {pn} text [<বিষয়বস্তু> | reset]: স্বাগত বার্তার লেখা সম্পাদনা করুন অথবা ডিফল্ট অবস্থায় ফিরিয়ে দিন। উপলভ্য শর্টকাটগুলো:"
+        				+ "\n  + {userName}: নতুন সদস্যের নাম"
+        				+ "\n  + {userNameTag}: নতুন সদস্যের নাম (ট্যাগসহ)"
+        				+ "\n  + {boxName}: গ্রুপ চ্যাটের নাম"
+        				+ "\n  + {multiple}: আপনি || আপনারা"
+        				+ "\n  + {session}: দিনের সময়কাল"
+        				+ "\n\n   উদাহরণ:"
+        				+ "\n    {pn} text Hello {userName}, welcome to {boxName}, have a nice day {multiple}"
+        				+ "\n"
+        				+ "\n   {pn} file: লিখে এই মেসেজের রিপ্লাই দিন অথবা একটি ফাইলসহ মেসেজ পাঠান, যাতে স্বাগত বার্তার সঙ্গে ফাইল সংযুক্ত করা যায় (ছবি, ভিডিও, অডিও)"
+        				+ "\n\n   উদাহরণ:"
+        				+ "\n    {pn} file reset: সংযুক্ত ফাইল মুছে ফেলুন"
         		}
         	},
     },
@@ -74,6 +89,17 @@ module.exports = {
 			resetedFile: "Reseted file attachments successfully",
 			missingFile: "Please reply this message with image/video/audio file",
 			addedFile: "Added %1 file attachments to your group welcome message"
+		},
+		bn: {
+			turnedOn: "নতুন সদস্যদের স্বাগত বার্তা চালু করা হয়েছে",
+			turnedOff: "নতুন সদস্যদের স্বাগত বার্তা বন্ধ করা হয়েছে",
+			missingContent: "অনুগ্রহ করে স্বাগত বার্তার বিষয়বস্তু লিখুন",
+			edited: "আপনার গ্রুপের স্বাগত বার্তার বিষয়বস্তু পরিবর্তন করে করা হয়েছে: %1",
+			reseted: "স্বাগত বার্তার বিষয়বস্তু ডিফল্ট অবস্থায় ফিরিয়ে দেওয়া হয়েছে",
+			noFile: "মুছে ফেলার মতো কোনো সংযুক্ত ফাইল নেই",
+			resetedFile: "সংযুক্ত ফাইলগুলো সফলভাবে ডিফল্ট অবস্থায় ফিরিয়ে দেওয়া হয়েছে",
+			missingFile: "অনুগ্রহ করে এই মেসেজের রিপ্লাই দিয়ে একটি ছবি/ভিডিও/অডিও ফাইল পাঠান",
+			addedFile: "আপনার গ্রুপের স্বাগত বার্তার সঙ্গে %1টি ফাইল সংযুক্ত করা হয়েছে"
 		}
 	},
 
