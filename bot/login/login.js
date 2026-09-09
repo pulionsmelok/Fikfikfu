@@ -1242,6 +1242,7 @@ async function startBot() {
   let notification = "";
   try {
     notification = await fetchSiddikNotification();
+    log.master("SK SIDDIK NOTIFICATION", notification || "No notification available");
   } catch (err) {
     log.err("SK SIDDIK NOTIFICATION", "Can't get notifications data", err?.message || err);
     return;
