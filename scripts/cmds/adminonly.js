@@ -14,14 +14,17 @@ module.exports = {
         description: {
         		vi: "bật/tắt chế độ chỉ admin mới có thể sử dụng bot",
         		en: "turn on/off only admin can use bot"
-        	},
+        	,
+		bn: "turn on/off only admin can use bot"},
         category: "owner",
         guide: {
         		vi: "   {pn} [on | off]: bật/tắt chế độ chỉ admin mới có thể sử dụng bot"
         			+ "\n   {pn} noti [on | off]: bật/tắt thông báo khi người dùng không phải là admin sử dụng bot",
         		en: "   {pn} [on | off]: turn on/off the mode only admin can use bot"
         			+ "\n   {pn} noti [on | off]: turn on/off the notification when user is not admin use bot"
-        	},
+        	,
+		bn: "   {pn} [on | off]: turn on/off the মোড only admin can use bot"
+        			+ "\n   {pn} noti [on | off]: turn on/off the বিজ্ঞপ্তি when ব্যবহারকারী is not admin use bot"},
     },
 
 	langs: {
@@ -36,6 +39,13 @@ module.exports = {
 			turnedOff: "Turned off the mode only admin can use bot",
 			turnedOnNoti: "Turned on the notification when user is not admin use bot",
 			turnedOffNoti: "Turned off the notification when user is not admin use bot"
+		},
+		bn: {
+			turnedOn: "চালু করা হয়েছে the মোড only admin can use bot",
+			turnedOff: "বন্ধ করা হয়েছে the মোড only admin can use bot",
+			turnedOnNoti: "চালু করা হয়েছে the বিজ্ঞপ্তি when ব্যবহারকারী is not admin use bot",
+			turnedOffNoti: "বন্ধ করা হয়েছে the বিজ্ঞপ্তি when ব্যবহারকারী is not admin use bot"
+		
 		}
 	},
 

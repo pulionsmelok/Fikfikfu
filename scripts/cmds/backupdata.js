@@ -12,11 +12,13 @@ module.exports = {
         description: {
         		vi: "Sao lưu dữ liệu của bot (threads, users, dashboard, globalData)",
         		en: "Backup data of bot (threads, users, dashboard, globalData)"
-        	},
+        	,
+		bn: "Backup data এর bot (threads, ব্যবহারকারীরা, dashboard, globalData)"},
         category: "owner",
         guide: {
         		en: "   {pn}"
-        	},
+        	,
+		bn: "   {pn}"},
     },
 
 	langs: {
@@ -25,6 +27,10 @@ module.exports = {
 		},
 		en: {
 			backedUp: "Bot data has been backed up to the scripts/cmds/tmp folder"
+		},
+		bn: {
+			backedUp: "Bot data has been backed up এ the scripts/cmds/tmp ফোল্ডার"
+		
 		}
 	},
 

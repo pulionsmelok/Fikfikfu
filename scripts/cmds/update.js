@@ -15,12 +15,16 @@ module.exports = {
         description: {
         		en: "Check for and install updates for the chatbot.",
         		vi: "Kiểm tra và cài đặt phiên bản mới nhất của chatbot trên GitHub."
-        	},
+        	,
+		bn: "Check জন্য এবং install updates জন্য the chatbot.",
+        		vi: "Kiểm tra và cài đặt phiên bản mới nhất của chatbot trên GitHub."},
         category: "owner",
         guide: {
         		en: "   {pn}",
         		vi: "   {pn}"
-        	},
+        	,
+		bn: "   {pn}",
+        		vi: "   {pn}"},
     },
 
 	langs: {
@@ -51,6 +55,21 @@ module.exports = {
 			updateComplete: "✅ | Update complete, do you want to restart the chatbot now (reply with \"yes\" or \"y\" to confirm)?",
 			updateTooFast: "⭕ Because the latest update was released %1 minutes %2 seconds ago, you can't update now. Please try again after %3 minutes %4 seconds to avoid errors.",
 			botWillRestart: "🔄 | The bot will restart now!"
+		},
+		bn: {
+			noUpdates: "✅ | আপনি are using the সর্বশেষ ভার্সন এর GoatBot V2 (v%1).",
+			updatePrompt: "💫 | আপনি are using ভার্সন %1. There is a new ভার্সন %2. Do আপনি want এ আপডেট the chatbot এ the সর্বশেষ ভার্সন?"
+				+ "\n\n⬆️ | The following ফাইলগুলো will be updated:"
+				+ "\n%3%4"
+				+ "\n\nℹ️ | See details at https://github.com/ntkhang03/Goat-Bot-V2/commits/main"
+				+ "\n💡 | React এ this বার্তা এ নিশ্চিত.",
+			fileWillDelete: "\n🗑️ | The following ফাইলগুলো/folders will be deleted:\n%1",
+			andMore: " ...এবং %1 more ফাইলগুলো",
+			updateConfirmed: "🚀 | Confirmed, updating...",
+			updateComplete: "✅ | Update complete, do আপনি want এ রিস্টার্ট the chatbot now (reply সহ \"yes\" অথবা \"y\" এ নিশ্চিত)?",
+			updateTooFast: "⭕ Because the সর্বশেষ আপডেট was released %1 minutes %2 seconds ago, আপনি can't আপডেট now. Please try again after %3 minutes %4 seconds এ avoid errors.",
+			botWillRestart: "🔄 | The bot will রিস্টার্ট now!"
+		
 		}
 	},
 

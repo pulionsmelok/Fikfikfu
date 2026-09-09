@@ -14,11 +14,13 @@ module.exports = {
         usePrefix: true,
         description: {
       en: "Create a love image using two Telegram profile pictures."
-    },
+    ,
+		bn: "Create a love ছবি using two Telegram profile pictures."},
         category: "love",
         guide: {
       en: "{pn} reply to someone"
-    },
+    ,
+		bn: "{pn} reply এ someone"},
     },
 
   async getProfilePhoto(api, userId) {

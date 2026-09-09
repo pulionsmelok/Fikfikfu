@@ -14,9 +14,11 @@ module.exports = {
         usePrefix: true,
         description: {
       en: "Create a love image with your and the replied user's profile pictures."
-    },
+    ,
+		bn: "Create a love ছবি সহ আপনার এবং the replied ব্যবহারকারী's profile pictures."},
         category: "user",
-        guide: { en: "{pn}" },
+        guide: { en: "{pn}" ,
+		bn: "{pn}"},
     },
 
   async getProfilePhoto(api, userId) {

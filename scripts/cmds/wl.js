@@ -13,7 +13,7 @@ module.exports = {
         usePrefix: true,
         description: {
       en: "Add, remove, edit whiteListIds role",
-    },
+		bn: "হোয়াইটলিস্টের অনুমতি যোগ, অপসারণ ও সম্পাদনা করুন"},
         category: "owner",
         guide: {
       en:
@@ -22,7 +22,12 @@ module.exports = {
         "\n	  {pn} [list | -l]: List all whiteListIds" +
         "   {pn} -m [on | off]: turn on/off the mode only whitelistIds can use bot" +
         "\n {pn} -m noti [on | off]: turn on/off the notification when user is not whitelistIds use bot",
-    },
+		bn:
+        "   {pn} [যোগ | -a] <uid | @tag>: Add whiteListIds role জন্য ব্যবহারকারী" +
+        "\n	  {pn} [অপসারণ | -r] <uid | @tag>: Remove whiteListIds role এর ব্যবহারকারী" +
+        "\n	  {pn} [তালিকা | -l]: তালিকা all whiteListIds" +
+        "   {pn} -m [on | off]: turn on/off the মোড only whitelistIds can use bot" +
+        "\n {pn} -m noti [on | off]: turn on/off the বিজ্ঞপ্তি when ব্যবহারকারী is not whitelistIds use bot",},
     },
 
   langs: {
@@ -41,6 +46,19 @@ module.exports = {
       turnedOffNoti:
         "❎ | 𝚃𝚞𝚛𝚗𝚎𝚍 𝚘𝚏𝚏 𝚝𝚑𝚎 𝚗𝚘𝚝𝚒𝚏𝚒𝚌𝚊𝚝𝚒𝚘𝚗 𝚠𝚑𝚎𝚗 𝚞𝚜𝚎𝚛 𝚒𝚜 𝚗𝚘𝚝 𝚠𝚑𝚒𝚝𝚎𝚕𝚒𝚜𝚝𝙸𝚍𝚜 𝚞𝚜𝚎 𝚋𝚘𝚝",
     },
+		bn: {
+      added: `╭✦✅ | %1 জন ব্যবহারকারীকে হোয়াইটলিস্টে যোগ করা হয়েছে\n%2`,
+      alreadyAdded: `\n╭✦⚠️ | %1 জন ব্যবহারকারী ইতোমধ্যেই হোয়াইটলিস্টে আছেন\n%2`,
+      missingIdAdd: "⚠️ | হোয়াইটলিস্টে যোগ করতে অনুগ্রহ করে UID দিন",
+      removed: `╭✦✅ | %1 জন ব্যবহারকারীকে হোয়াইটলিস্ট থেকে সরানো হয়েছে\n%2`,
+      notAdded: `╭✦⚠️ | %1 জন ব্যবহারকারী হোয়াইটলিস্টে ছিলেন না\n%2`,
+      missingIdRemove: "⚠️ | হোয়াইটলিস্ট থেকে সরাতে অনুগ্রহ করে UID দিন",
+      listAdmin: `╭✦✨ | হোয়াইটলিস্টের ব্যবহারকারী আইডির তালিকা\n%1\n╰‣`,
+      turnedOn: "✅ | শুধুমাত্র হোয়াইটলিস্টের ব্যবহারকারীরা বোট ব্যবহার করতে পারবেন—এই মোড চালু করা হয়েছে",
+      turnedOff: "❎ | শুধুমাত্র হোয়াইটলিস্টের ব্যবহারকারীরা বোট ব্যবহার করতে পারবেন—এই মোড বন্ধ করা হয়েছে",
+      turnedOnNoti: "✅ | হোয়াইটলিস্টে নেই এমন ব্যবহারকারী বোট ব্যবহার করলে বিজ্ঞপ্তি চালু করা হয়েছে",
+      turnedOffNoti: "❎ | হোয়াইটলিস্টে নেই এমন ব্যবহারকারী বোট ব্যবহার করলে বিজ্ঞপ্তি বন্ধ করা হয়েছে"
+		},
   },
 
   onStart: async function ({ message, args, usersData, event, getLang, api, threadID}) {

@@ -12,7 +12,8 @@ module.exports = {
         description: {
         		vi: "Load lại config của bot",
         		en: "Reload config of bot"
-        	},
+        	,
+		bn: "Reload config এর bot"},
         category: "owner",
         guide: "{pn}",
     },
@@ -23,6 +24,10 @@ module.exports = {
 		},
 		en: {
 			success: "Config has been reloaded successfully"
+		},
+		bn: {
+			success: "Config has been reloaded সফলভাবে"
+		
 		}
 	},
 

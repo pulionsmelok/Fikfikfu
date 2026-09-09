@@ -21,7 +21,8 @@ module.exports = {
         description: {
         		vi: "Quản lý các tệp lệnh event của bạn",
         		en: "Manage your event command files"
-        	},
+        	,
+		bn: "Manage আপনার event কমান্ড ফাইলগুলো"},
         category: "owner",
         guide: {
         		vi: "{pn} load <tên file lệnh>"
@@ -32,7 +33,11 @@ module.exports = {
         			+ "\n{pn} loadAll"
         			+ "\n{pn} install <url> <command file name>: Download and load event command, url is the path to the command file (raw)"
         			+ "\n{pn} install <code> <command file name>: Download and load event command, code is the code of the command file (raw)"
-        	},
+        	,
+		bn: "{pn} load <কমান্ড ফাইল নাম>"
+        			+ "\n{pn} loadAll"
+        			+ "\n{pn} install <url> <কমান্ড ফাইল নাম>: Download এবং load event কমান্ড, url is the path এ the কমান্ড ফাইল (raw)"
+        			+ "\n{pn} install <code> <কমান্ড ফাইল নাম>: Download এবং load event কমান্ড, code is the code এর the কমান্ড ফাইল (raw)"},
     },
 
 	langs: {
@@ -75,6 +80,27 @@ module.exports = {
 			missingFile: "⚠️ | File \"%1\" not found",
 			invalidFileName: "⚠️ | Invalid file name",
 			unloadedFile: "✅ | Unloaded command \"%1\""
+		},
+		bn: {
+			missingFileName: "⚠️ | অনুগ্রহ করে লিখুন the কমান্ড নাম আপনি want এ reload",
+			loaded: "✅ | লোড করা হয়েছে event কমান্ড \"%1\" সফলভাবে",
+			loadedError: "❌ | লোড করা হয়েছে event কমান্ড \"%1\" ব্যর্থ সহ ত্রুটি\n%2: %3",
+			loadedSuccess: "✅ | লোড করা হয়েছে \"%1\" event কমান্ড সফলভাবে",
+			loadedFail: "❌ | লোড করা হয়েছে event কমান্ড \"%1\" ব্যর্থ\n%2",
+			missingCommandNameUnload: "⚠️ | অনুগ্রহ করে লিখুন the কমান্ড নাম আপনি want এ unload",
+			unloaded: "✅ | আনলোড করা হয়েছে event কমান্ড \"%1\" সফলভাবে",
+			unloadedError: "❌ | আনলোড করা হয়েছে event কমান্ড \"%1\" ব্যর্থ সহ ত্রুটি\n%2: %3",
+			missingUrlCodeOrFileName: "⚠️ | অনুগ্রহ করে লিখুন the url অথবা code এবং কমান্ড ফাইল নাম আপনি want এ install",
+			missingUrlOrCode: "⚠️ | অনুগ্রহ করে লিখুন the url অথবা code এর the কমান্ড ফাইল আপনি want এ install",
+			missingFileNameInstall: "⚠️ | অনুগ্রহ করে লিখুন the ফাইল নাম এ save the কমান্ড (সহ .js extension)",
+			invalidUrlOrCode: "⚠️ | Unable এ get কমান্ড code",
+			alreadExist: "⚠️ | The কমান্ড ফাইল ইতোমধ্যে exists, are আপনি sure আপনি want এ overwrite the old কমান্ড ফাইল?\nReact এ this বার্তা এ continue",
+			installed: "✅ | Installed event কমান্ড \"%1\" সফলভাবে, the কমান্ড ফাইল is saved at %2",
+			installedError: "❌ | Installed event কমান্ড \"%1\" ব্যর্থ সহ ত্রুটি\n%2: %3",
+			missingFile: "⚠️ | ফাইল \"%1\" পাওয়া যায়নি",
+			invalidFileName: "⚠️ | অবৈধ ফাইল নাম",
+			unloadedFile: "✅ | আনলোড করা হয়েছে কমান্ড \"%1\""
+		
 		}
 	},
 

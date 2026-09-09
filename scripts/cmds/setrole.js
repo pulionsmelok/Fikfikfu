@@ -10,7 +10,8 @@ module.exports = {
         description: {
         		vi: "Chỉnh sửa role của lệnh (những lệnh có role < 2)",
         		en: "Edit role of command (commands with role < 2)"
-        	},
+        	,
+		bn: "Edit role এর কমান্ড (কমান্ডগুলো সহ role < 2)"},
         category: "info",
         guide: {
         		vi: "   {pn} <commandName> <new role>: set role mới cho lệnh"
@@ -39,7 +40,20 @@ module.exports = {
         			+ "\n    {pn} rank default: reset to default"
         			+ "\n—————"
         			+ "\n   {pn} [viewrole|view|show]: view role of edited commands"
-        	},
+        	,
+		bn: "   {pn} <commandName> <new role>: set new role জন্য কমান্ড"
+        			+ "\n   With:"
+        			+ "\n   + <commandName>: কমান্ড নাম"
+        			+ "\n   + <new role>: new role এর কমান্ড সহ:"
+        			+ "\n   + <new role> = 0: কমান্ড can be used by all members in গ্রুপ"
+        			+ "\n   + <new role> = 1: কমান্ড can be used by admin only"
+        			+ "\n   + <new role> = ডিফল্ট: reset role এর কমান্ড এ ডিফল্ট"
+        			+ "\n   Example:"
+        			+ "\n    {pn} rank 1: (কমান্ড rank can be used by admin only)"
+        			+ "\n    {pn} rank 0: (কমান্ড rank can be used by all members in গ্রুপ)"
+        			+ "\n    {pn} rank ডিফল্ট: reset এ ডিফল্ট"
+        			+ "\n—————"
+        			+ "\n   {pn} [viewrole|view|show]: view role এর edited কমান্ডগুলো"},
     },
 
 	langs: {
@@ -60,6 +74,16 @@ module.exports = {
 			noChangeRole: "❗ Can't change role of command \"%1\"",
 			resetRole: "Reset role of command \"%1\" to default",
 			changedRole: "Changed role of command \"%1\" to %2"
+		},
+		bn: {
+			noEditedCommand: "✅ আপনার গ্রুপ has no edited কমান্ড",
+			editedCommand: "⚠️ আপনার গ্রুপ has edited কমান্ডগুলো:\n",
+			noPermission: "❗ শুধুমাত্র অ্যাডমিন এই কমান্ডটি ব্যবহার করতে পারবেন",
+			commandNotFound: "কমান্ড \"%1\" পাওয়া যায়নি",
+			noChangeRole: "❗ Can't change role এর কমান্ড \"%1\"",
+			resetRole: "রিসেট করুন role এর কমান্ড \"%1\" এ ডিফল্ট",
+			changedRole: "পরিবর্তন করা হয়েছে role এর কমান্ড \"%1\" এ %2"
+		
 		}
 	},
 

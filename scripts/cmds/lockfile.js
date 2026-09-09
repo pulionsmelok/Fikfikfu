@@ -29,11 +29,13 @@ module.exports = {
         usePrefix: true,
         description: {
       en: "Lock/Unlock commands (JSON storage)"
-    },
+    ,
+		bn: "Lock/Unlock কমান্ডগুলো (JSON storage)"},
         category: "admin",
         guide: {
       en: "{pn} list\n{pn} lock <cmd>\n{pn} unlock <cmd>\n{pn} unlockall"
-    },
+    ,
+		bn: "{pn} তালিকা\n{pn} lock <cmd>\n{pn} unlock <cmd>\n{pn} unlockall"},
     },
 
   onStart: async function ({ api, event, args, message }) {

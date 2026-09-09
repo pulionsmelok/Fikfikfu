@@ -13,7 +13,8 @@ module.exports = {
         description: {
         		vi: "Tìm app trên appstore",
         		en: "Search app on appstore"
-        	},
+        	,
+		bn: "সার্চ app on appstore"},
         category: "software",
         guide: "   {pn}: <keyword>"
         		+ "\n   - Example:"
@@ -31,6 +32,11 @@ module.exports = {
 		en: {
 			missingKeyword: "You haven't entered any keyword",
 			noResult: "No result found for keyword %1"
+		},
+		bn: {
+			missingKeyword: "আপনার আছেn't entered any কীওয়ার্ড",
+			noResult: "কোনো ফলাফল পাওয়া যায়নি জন্য কীওয়ার্ড %1"
+		
 		}
 	},
 

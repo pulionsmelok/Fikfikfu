@@ -17,7 +17,8 @@ module.exports = {
     category: "media",
     guide: {
       en: "{pn} <movie name>"
-    },
+    ,
+		bn: "{pn} <movie নাম>"},
     usePrefix: true
   },
 

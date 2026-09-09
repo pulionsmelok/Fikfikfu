@@ -10,7 +10,8 @@ module.exports = {
         description: {
         		vi: "Thêm tên gọi khác cho 1 lệnh bất kỳ trong nhóm của bạn",
         		en: "Add an alias for any command in your group"
-        	},
+        	,
+		bn: "Add an alias জন্য any কমান্ড in আপনার গ্রুপ"},
         category: "config",
         guide: {
         		vi: "  Lệnh dùng để thêm/xóa tên gọi khác cho 1 lệnh nào đó để tiện sử dụng trong nhóm chat của bạn"
@@ -31,7 +32,16 @@ module.exports = {
         			+ "\nExample:\n    {pn} rm ctrk customrankcard"
         			+ "\n\n   {pn} list: list all alias for commands in your group"
         			+ "\n   {pn} list -g: list all alias for commands in the whole system"
-        	},
+        	,
+		bn: "  This কমান্ড is used এ যোগ/অপসারণ alias জন্য any কমান্ড in আপনার গ্রুপ"
+        			+ "\n   {pn} যোগ <alias> <কমান্ড>: যোগ an alias জন্য the কমান্ড in আপনার গ্রুপ"
+        			+ "\n   {pn} যোগ <alias> <কমান্ড> -g: যোগ an alias জন্য the কমান্ড in the whole system (only bot admin)"
+        			+ "\nExample:\n    {pn} যোগ ctrk customrankcard"
+        			+ "\n\n   {pn} [অপসারণ | rm] <alias> <কমান্ড>: অপসারণ an alias জন্য the কমান্ড in আপনার গ্রুপ"
+        			+ "\n   {pn} [অপসারণ | rm] <alias> <কমান্ড> -g: অপসারণ an alias জন্য the কমান্ড in the whole system (only bot admin)"
+        			+ "\nExample:\n    {pn} rm ctrk customrankcard"
+        			+ "\n\n   {pn} তালিকা: তালিকা all alias জন্য কমান্ডগুলো in আপনার গ্রুপ"
+        			+ "\n   {pn} তালিকা -g: তালিকা all alias জন্য কমান্ডগুলো in the whole system"},
     },
 
 	langs: {
@@ -70,6 +80,25 @@ module.exports = {
 			noAliasInSystem: "⚠️ There are no aliases in the system",
 			notExistAliasInGroup: "⚠️ Your group has not set any other aliases for commands",
 			aliasListInGroup: "📜 List of other aliases for commands in your group chat:\n%1"
+		},
+		bn: {
+			commandNotExist: "❌ কমান্ড \"%1\" অস্তিত্ব নেই",
+			aliasExist: "❌ Alias \"%1\" ইতোমধ্যে exists জন্য কমান্ড \"%2\" in the system",
+			addAliasSuccess: "✅ যোগ করা হয়েছে alias \"%1\" জন্য কমান্ড \"%2\" in the system",
+			noPermissionAdd: "❌ আপনি করবেন না have permission এ যোগ alias \"%1\" জন্য কমান্ড \"%2\" in the system",
+			aliasIsCommand: "❌ Alias \"%1\" is the same as another কমান্ড in the system",
+			aliasExistInGroup: "❌ Alias \"%1\" ইতোমধ্যে exists জন্য কমান্ড \"%2\" in this গ্রুপ",
+			addAliasToGroupSuccess: "✅ যোগ করা হয়েছে alias \"%1\" জন্য কমান্ড \"%2\" in আপনার গ্রুপ chat",
+			aliasNotExist: "❌ Alias \"%1\" অস্তিত্ব নেই জন্য কমান্ড \"%2\"",
+			removeAliasSuccess: "✅ সরিয়ে দেওয়া হয়েছে alias \"%1\" জন্য কমান্ড \"%2\" in the system",
+			noPermissionDelete: "❌ আপনি করবেন না have permission এ অপসারণ alias \"%1\" জন্য কমান্ড \"%2\" in the system",
+			noAliasInGroup: "❌ কমান্ড \"%1\" does not have any other alias in আপনার গ্রুপ",
+			removeAliasInGroupSuccess: "✅ সরিয়ে দেওয়া হয়েছে alias \"%1\" জন্য কমান্ড \"%2\" in আপনার গ্রুপ chat",
+			aliasList: "📜 তালিকা এর other aliases জন্য কমান্ডগুলো in the system:\n%1",
+			noAliasInSystem: "⚠️ There are no aliases in the system",
+			notExistAliasInGroup: "⚠️ আপনার গ্রুপ has not set any other aliases জন্য কমান্ডগুলো",
+			aliasListInGroup: "📜 তালিকা এর other aliases জন্য কমান্ডগুলো in আপনার গ্রুপ chat:\n%1"
+		
 		}
 	},
 

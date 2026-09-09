@@ -12,12 +12,14 @@ module.exports = {
         description: {
         		vi: "Đồng bộ dữ liệu từ json sang mongodb",
         		en: "Synchronize data from json to mongodb"
-        	},
+        	,
+		bn: "Synchronize data থেকে json এ mongodb"},
         category: "owner",
         guide: {
         		vi: "   {pn} <thread | user | dashboard | global | all>: Sẽ đồng bộ dữ liệu từ data json được lưu trong thư mục database/data sang mongodb\n\n   Lưu ý: Nếu dữ liệu đã tồn tại trong mongodb thì sẽ được cập nhật lại",
         		en: "   {pn} <thread | user | dashboard | global | all>: Will synchronize data from json data stored in the database/data folder to mongodb\n\n   Note: If the data already exists in mongodb, it will be updated"
-        	},
+        	,
+		bn: "   {pn} <thread | ব্যবহারকারী | dashboard | global | all>: Will synchronize data থেকে json data stored in the database/data ফোল্ডার এ mongodb\n\n   নোট: If the data ইতোমধ্যে exists in mongodb, it will be updated"},
     },
 
 	langs: {
@@ -40,6 +42,17 @@ module.exports = {
 			successUser: "✅ Successfully synchronized user data from json to mongodb!",
 			successDashboard: "✅ Successfully synchronized dashboard data from json to mongodb!",
 			successGlobal: "✅ Successfully synchronized global data from json to mongodb!"
+		},
+		bn: {
+			invalidDatabase: "❌ Please switch database এ mongodb in config then রিস্টার্ট the bot এ use this কমান্ড",
+			missingFile: "❌ আপনার আছেn't copied the data ফাইল %1 into the database/data ফোল্ডার",
+			formatInvalid: "❌ Data format is অবৈধ",
+			error: "❌ একটি ত্রুটি ঘটেছে:\n%1: %2",
+			successThread: "✅ Successfully synchronized thread data থেকে json এ mongodb!",
+			successUser: "✅ Successfully synchronized ব্যবহারকারী data থেকে json এ mongodb!",
+			successDashboard: "✅ Successfully synchronized dashboard data থেকে json এ mongodb!",
+			successGlobal: "✅ Successfully synchronized global data থেকে json এ mongodb!"
+		
 		}
 	},
 

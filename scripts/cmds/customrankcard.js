@@ -14,7 +14,8 @@ module.exports = {
         description: {
         		vi: "Thiết kế thẻ rank theo ý bạn",
         		en: "Design rank card by your own"
-        	},
+        	,
+		bn: "Design rank card by আপনার own"},
         category: "rank",
         guide: {
         		vi: {
@@ -70,7 +71,33 @@ module.exports = {
         				[`${__dirname}/assets/guide/customrankcard_2.png`]: "https://i.ibb.co/wy1ZHHL/image.png"
         			}
         		}
-        	},
+        	,
+		bn: {
+        			body: "   {pn} [maincolor | subcolor | linecolor | progresscolor | alphasubcolor | textcolor | namecolor | expcolor | rankcolor | levelcolor | reset] <value>"
+        				+ "\n   In which: "
+        				+ "\n  + maincolor | background <value>: main background এর rank card"
+        				+ "\n  + subcolor <value>: sub background"
+        				+ "\n  + linecolor <value>: color এর line between main এবং sub background"
+        				+ "\n  + expbarcolor <value>: color এর অভিজ্ঞতা bar"
+        				+ "\n  + progresscolor <value>: color এর বর্তমান অভিজ্ঞতা bar"
+        				+ "\n  + alphasubcolor <value>: opacity এর sub background (থেকে 0 -> 1)"
+        				+ "\n  + textcolor <value>: color এর text (hex color অথবা rgba)"
+        				+ "\n  + namecolor <value>: color এর নাম"
+        				+ "\n  + expcolor <value>: color এর অভিজ্ঞতা"
+        				+ "\n  + rankcolor <value>: color এর rank"
+        				+ "\n  + levelcolor <value>: color এর level"
+        				+ "\n    • <value> can be hex color, rgb, rgba, gradient (each color is separated by space) অথবা ছবি url"
+        				+ "\n    • If আপনি want এ use gradient, please enter many colors separated by space"
+        				+ "\n   {pn} reset: reset all এ ডিফল্ট"
+        				+ "\n   Example:"
+        				+ "\n    {pn} maincolor #fff000"
+        				+ "\n    {pn} subcolor rgba(255,136,86,0.4)"
+        				+ "\n    {pn} reset",
+        			attachment: {
+        				[`${__dirname}/assets/guide/customrankcard_1.jpg`]: "https://i.ibb.co/BZ2Qgs1/image.png",
+        				[`${__dirname}/assets/guide/customrankcard_2.png`]: "https://i.ibb.co/wy1ZHHL/image.png"
+        			}
+        		}},
     },
 
 	langs: {
@@ -91,6 +118,16 @@ module.exports = {
 			success: "Your changes have been saved, here is a preview",
 			reseted: "All settings have been reset to default",
 			invalidAlpha: "Please choose a number from 0 -> 1"
+		},
+		bn: {
+			invalidImage: "অবৈধ ছবি url, please নির্বাচন an url সহ ছবি destination (jpg, jpeg, png, gif), আপনি can আপলোড ছবি এ https://imgbb.com/ এবং নির্বাচন \"get direct লিংক\" এ get ছবি url",
+			invalidAttachment: "অবৈধ অ্যাটাচমেন্ট, please নির্বাচন an ছবি ফাইল",
+			invalidColor: "অবৈধ color code, please নির্বাচন a hex color code (6 digits) অথবা rgba color code",
+			notSupportImage: "Url ছবি is not supported সহ option \"%1\"",
+			success: "আপনার changes have been saved, here is a preview",
+			reseted: "All settings have been reset এ ডিফল্ট",
+			invalidAlpha: "অনুগ্রহ করে নির্বাচন করুন a নম্বর থেকে 0 -> 1"
+		
 		}
 	},
 

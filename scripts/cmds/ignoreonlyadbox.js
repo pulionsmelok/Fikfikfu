@@ -22,12 +22,14 @@ module.exports = {
         description: {
         		vi: "Cho phép chọn lệnh được dùng khi onlyadminbox đang bật",
         		en: "Allow selected commands to work while onlyadminbox is enabled"
-        	},
+        	,
+		bn: "Allow selected কমান্ডগুলো এ work while onlyadminbox is enabled"},
         category: "box chat",
         guide: {
         		vi: "{pn} add <command> | {pn} del <command> | {pn} list",
         		en: "{pn} add <command> | {pn} del <command> | {pn} list"
-        	},
+        	,
+		bn: "{pn} যোগ <কমান্ড> | {pn} del <কমান্ড> | {pn} তালিকা"},
     },
 
 	langs: {
@@ -40,6 +42,17 @@ module.exports = {
 			commandNotInList: "❌ Command \"%1\" is not in the list.",
 			commandDeleted: "✅ Removed \"%1\" from the onlyadminbox ignore list.",
 			ignoreList: "📑 This group's onlyadminbox ignore list:\n%1"
+		},
+		bn: {
+			missingCommandNameToAdd: "⚠️ অনুগ্রহ করে লিখুন a কমান্ড নাম.",
+			missingCommandNameToDelete: "⚠️ অনুগ্রহ করে লিখুন a কমান্ড নাম.",
+			commandNotFound: "❌ কমান্ড \"%1\" was পাওয়া যায়নি.",
+			commandAlreadyInList: "❌ কমান্ড \"%1\" is ইতোমধ্যে allowed.",
+			commandAdded: "✅ যোগ করা হয়েছে \"%1\" এ the onlyadminbox ignore তালিকা.",
+			commandNotInList: "❌ কমান্ড \"%1\" is not in the তালিকা.",
+			commandDeleted: "✅ সরিয়ে দেওয়া হয়েছে \"%1\" থেকে the onlyadminbox ignore তালিকা.",
+			ignoreList: "📑 This গ্রুপ's onlyadminbox ignore তালিকা:\n%1"
+		
 		},
 		vi: {
 			missingCommandNameToAdd: "⚠️ Vui lòng nhập tên lệnh.",

@@ -12,7 +12,8 @@ module.exports = {
         description: {
         		vi: "Cài đặt ngôn ngữ của bot cho nhóm chat hiện tại hoặc tất cả các nhóm chat",
         		en: "Set default language of bot for current chat or all chats"
-        	},
+        	,
+		bn: "Set ডিফল্ট language এর bot জন্য বর্তমান chat অথবা all chats"},
         category: "owner",
         guide: {
         		vi: "   {pn} <language code ISO 639-1"
@@ -23,7 +24,11 @@ module.exports = {
         			+ "\n   Example:"
         			+ "\n    {pn} en"
         			+ "\n    {pn} vi"
-        	},
+        	,
+		bn: "\n   {pn} <language code ISO 639-1"
+        			+ "\n   Example:"
+        			+ "\n    {pn} en"
+        			+ "\n    {pn} vi"},
     },
 
 	langs: {
@@ -38,6 +43,13 @@ module.exports = {
 			setLangForCurrent: "Set default language for current chat: %1",
 			noPermission: "Only bot admin can use this command",
 			langNotFound: "Can't find language: %1"
+		},
+		bn: {
+			setLangForAll: "Set ডিফল্ট language এর bot এ: %1",
+			setLangForCurrent: "Set ডিফল্ট language জন্য বর্তমান chat: %1",
+			noPermission: "শুধুমাত্র বোট অ্যাডমিন এই কমান্ডটি ব্যবহার করতে পারবেন",
+			langNotFound: "Can't find language: %1"
+		
 		}
 	},
 

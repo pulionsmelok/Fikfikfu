@@ -13,7 +13,8 @@ module.exports = {
         description: {
         		vi: "Dịch văn bản sang ngôn ngữ mong muốn",
         		en: "Translate text to the desired language"
-        	},
+        	,
+		bn: "Translate text এ the desired language"},
         category: "utility",
         guide: {
         		vi: "   {pn} <văn bản>: Dịch văn bản sang ngôn ngữ của box chat bạn hoặc ngôn ngữ mặc định của bot"
@@ -30,7 +31,14 @@ module.exports = {
         			+ "\n    {pn} hello -> vi"
         			+ "\n   {pn} -r [on | off]: Turn on or off the automatic translation mode when someone reacts to the message"
         			+ "\n   {pn} -r set <emoji>: Set the emoji to translate the message in your chat group"
-        	},
+        	,
+		bn: "   {pn} <text>: Translate text এ the language এর আপনার chat box অথবা the ডিফল্ট language এর the bot"
+        			+ "\n   {pn} <text> -> <ISO 639-1>: Translate text এ the desired language"
+        			+ "\n   অথবা আপনি can reply a বার্তা এ translate the content এর that বার্তা"
+        			+ "\n   Example:"
+        			+ "\n    {pn} hello -> vi"
+        			+ "\n   {pn} -r [on | off]: চালু করুন অথবা off the automatic translation মোড when someone reacts এ the বার্তা"
+        			+ "\n   {pn} -r set <emoji>: Set the emoji এ translate the বার্তা in আপনার chat গ্রুপ"},
     },
 
 	langs: {
@@ -50,6 +58,15 @@ module.exports = {
 			turnOffTransWhenReaction: "✅ Turn off translate message when reaction",
 			inputEmoji: "🌀 Please react to this message to set that emoji as emoji to translate message",
 			emojiSet: "✅ Emoji to translate message is set to %1"
+		},
+		bn: {
+			translateTo: "🌐 Translate থেকে %1 এ %2",
+			invalidArgument: "❌ অবৈধ argument, please নির্বাচন on অথবা off",
+			turnOnTransWhenReaction: `✅ চালু করুন translate বার্তা when reaction, try এ react \"${defaultEmojiTranslate}\" এ any বার্তা এ translate it (not support bot বার্তা)\n Only translate বার্তা after turn on this feature`,
+			turnOffTransWhenReaction: "✅ বন্ধ করুন translate বার্তা when reaction",
+			inputEmoji: "🌀 অনুগ্রহ করে এই বার্তায় রিঅ্যাক্ট করুন এ this বার্তা এ set that emoji as emoji এ translate বার্তা",
+			emojiSet: "✅ Emoji এ translate বার্তা is set এ %1"
+		
 		}
 	},
 

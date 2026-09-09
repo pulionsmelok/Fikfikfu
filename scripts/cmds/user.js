@@ -12,7 +12,8 @@ module.exports = {
         description: {
         		vi: "Quản lý người dùng trong hệ thống bot",
         		en: "Manage users in bot system"
-        	},
+        	,
+		bn: "Manage ব্যবহারকারীরা in bot system"},
         category: "owner",
         guide: {
         		vi: "   {pn} [find | -f | search | -s] <tên cần tìm>: tìm kiếm người dùng trong dữ liệu bot bằng tên"
@@ -25,7 +26,12 @@ module.exports = {
         			+ "\n   {pn} [ban | -b] [<uid> | @tag | reply message] <reason>: to ban user with id <uid> or tagged user or sender of message replied using bot"
         			+ "\n"
         			+ "\n   {pn} unban [<uid> | @tag | reply message]: to unban user using bot"
-        	},
+        	,
+		bn: "   {pn} [find | -f | সার্চ | -s] <নাম এ find>: সার্চ জন্য ব্যবহারকারীরা in bot data by নাম"
+        			+ "\n"
+        			+ "\n   {pn} [ban | -b] [<uid> | @tag | reply বার্তা] <কারণ>: এ ban ব্যবহারকারী সহ id <uid> অথবা tagged ব্যবহারকারী অথবা sender এর বার্তা replied using bot"
+        			+ "\n"
+        			+ "\n   {pn} unban [<uid> | @tag | reply বার্তা]: এ unban ব্যবহারকারী using bot"},
     },
 
 	langs: {
@@ -50,6 +56,18 @@ module.exports = {
 			uidRequiredUnban: "Uid of user to unban cannot be empty",
 			userNotBanned: "User with id [%1 | %2] is not banned",
 			userUnbanned: "User with id [%1 | %2] has been unbanned"
+		},
+		bn: {
+			noUserFound: "❌ No ব্যবহারকারী found সহ নাম matching কীওয়ার্ড: \"%1\" in bot data",
+			userFound: "🔎 Found %1 ব্যবহারকারী সহ নাম matching কীওয়ার্ড \"%2\" in bot data:\n%3",
+			uidRequired: "Uid এর ব্যবহারকারী এ ban পারবেন না be empty, please enter uid অথবা tag অথবা reply বার্তা এর 1 ব্যবহারকারী by ব্যবহারকারী ban <uid> <কারণ>",
+			reasonRequired: "কারণ এ ban ব্যবহারকারী পারবেন না be empty, please enter uid অথবা tag অথবা reply বার্তা এর 1 ব্যবহারকারী by ব্যবহারকারী ban <uid> <কারণ>",
+			userHasBanned: "ব্যবহারকারী সহ id [%1 | %2] has been banned before:\n» কারণ: %3\n» তারিখ: %4",
+			userBanned: "ব্যবহারকারী সহ id [%1 | %2] has been banned:\n» কারণ: %3\n» তারিখ: %4",
+			uidRequiredUnban: "Uid এর ব্যবহারকারী এ unban পারবেন না be empty",
+			userNotBanned: "ব্যবহারকারী সহ id [%1 | %2] is not banned",
+			userUnbanned: "ব্যবহারকারী সহ id [%1 | %2] has been unbanned"
+		
 		}
 	},
 

@@ -30,7 +30,8 @@ module.exports = {
         description: {
         		vi: "Game đoán số",
         		en: "Guess number game"
-        	},
+        	,
+		bn: "Guess নম্বর গেম"},
         category: "game",
         guide: {
         		vi: "  {pn} [4 | 5 | 6] [single | multi]: tạo một bàn chơi mới, với:"
@@ -61,7 +62,21 @@ module.exports = {
         			+ "\n\n   {pn} rank <page>: view the ranking."
         			+ "\n   {pn} info [<uid> | <@tag> | <reply> | <empty>]: view your or other's ranking information."
         			+ "\n   {pn} reset: reset the ranking (only admin bot)."
-        	},
+        	,
+		bn: "  {pn} [4 | 5 | 6] [single | multi]: create a new গেম, সহ:"
+        			+ "\n    4 5 6 is the নম্বর এর digits এর the নম্বর এ guess, ডিফল্ট is 4."
+        			+ "\n    single | multi is the গেম মোড, single is 1 player, multi is multi player, ডিফল্ট is single."
+        			+ "\n   Example:"
+        			+ "\n    {pn}"
+        			+ "\n    {pn} 4 single"
+        			+ "\n"
+        			+ "\n   কীভাবে খেলবেন: the player replies এ the বার্তা এর the bot সহ the following rules:"
+        			+ "\n   আপনার আছে " + rows.map(item => `${item.row} times (${item.col} numbers)`).join(", ") + "."
+        			+ "\n   After each guess, আপনি will get additional hints এর the নম্বর এর correct digits (shown on the left) এবং the নম্বর এর correct digits (shown on the right)."
+        			+ "\n   নোট: The নম্বর is formed সহ digits থেকে 0 এ 9, each digit appears only once এবং the নম্বর can start সহ 0."
+        			+ "\n\n   {pn} rank <পৃষ্ঠা>: view the র‍্যাঙ্কিং."
+        			+ "\n   {pn} info [<uid> | <@tag> | <reply> | <empty>]: view আপনার অথবা other's র‍্যাঙ্কিং information."
+        			+ "\n   {pn} reset: reset the র‍্যাঙ্কিং (only admin bot)."},
     },
 
 	langs: {
@@ -104,6 +119,27 @@ module.exports = {
 			invalidNumbers: "⚠️ | Please enter %1 numbers you want to guess",
 			win: "🎉 | Congratulations you guessed the number %1 after %2 guesses and received %3 bonus points.",
 			loss: "🤦‍♂️ | You lost, the correct number is %1."
+		},
+		bn: {
+			charts: "🏆 | র‍্যাঙ্কিং:\n%1",
+			pageInfo: "Page %1/%2",
+			noScore: "⭕ | There is no one who has scored.",
+			noPermissionReset: "⚠️ | আপনি করবেন না have permission এ reset the র‍্যাঙ্কিং.",
+			notFoundUser: "⚠️ | Could not find ব্যবহারকারী সহ id %1 in the র‍্যাঙ্কিং.",
+			userRankInfo: "🏆 | র‍্যাঙ্কিং information:\nName: %1\nScore: %2\nNumber এর games: %3\nNumber এর wins: %4\n%5\nNumber এর losses: %6\nWin rate: %7%\nTotal খেলুন সময়: %8",
+			digits: "%1 digits: %2",
+			resetRankSuccess: "✅ | রিসেট করুন the র‍্যাঙ্কিং সফলভাবে.",
+			invalidCol: "⚠️ | অনুগ্রহ করে লিখুন the নম্বর এর digits এর the নম্বর এ guess is 4, 5 অথবা 6",
+			invalidMode: "⚠️ | অনুগ্রহ করে লিখুন the গেম মোড is single অথবা multi",
+			created: "✅ | Create গেম সফলভাবে.",
+			gameName: "GUESS NUMBER GAME",
+			gameGuide: "⏳ | কীভাবে খেলবেন:\nআপনার আছে %1 guesses.\nAfter each guess, আপনি will get additional hints এর the নম্বর এর correct digits (shown on the left) এবং the নম্বর এর correct digits (shown on the right).",
+			gameNote: "📄 | নোট:\nThe নম্বর is formed সহ digits থেকে 0 এ 9, each digit appears only once এবং the নম্বর can start সহ 0.",
+			replyToPlayGame: "🎮 | Reply এ the বার্তা below সহ the ছবি এর %1 numbers আপনি guess এ খেলুন the গেম.",
+			invalidNumbers: "⚠️ | অনুগ্রহ করে লিখুন %1 numbers আপনি want এ guess",
+			win: "🎉 | অভিনন্দন আপনি guessed the নম্বর %1 after %2 guesses এবং received %3 bonus points.",
+			loss: "🤦‍♂️ | আপনি lost, the correct নম্বর is %1."
+		
 		}
 	},
 

@@ -97,7 +97,8 @@ module.exports = {
         description: {
         		vi: "Quản lý các tệp lệnh của bạn",
         		en: "Manage your command files"
-        	},
+        	,
+		bn: "Manage আপনার কমান্ড ফাইলগুলো"},
         category: "owner",
         guide: {
         		vi: "   {pn} load <tên file lệnh>"
@@ -108,7 +109,11 @@ module.exports = {
         			+ "\n   {pn} loadAll"
         			+ "\n   {pn} install <url> <command file name>: Download and install a command file from a url, url is the path to the file (raw)"
         			+ "\n   {pn} install <command file name> <code>: Download and install a command file from a code, code is the code of the command"
-        	},
+        	,
+		bn: "   {pn} load <কমান্ড ফাইল নাম>"
+        			+ "\n   {pn} loadAll"
+        			+ "\n   {pn} install <url> <কমান্ড ফাইল নাম>: Download এবং install a কমান্ড ফাইল থেকে a url, url is the path এ the ফাইল (raw)"
+        			+ "\n   {pn} install <কমান্ড ফাইল নাম> <code>: Download এবং install a কমান্ড ফাইল থেকে a code, code is the code এর the কমান্ড"},
     },
 
 	langs: {
@@ -155,6 +160,29 @@ module.exports = {
 			missingFile: "⚠️ | Command file \"%1\" not found",
 			invalidFileName: "⚠️ | Invalid command file name",
 			unloadedFile: "✅ | Unloaded command \"%1\""
+		},
+		bn: {
+			missingFileName: "⚠️ | অনুগ্রহ করে লিখুন the কমান্ড নাম আপনি want এ reload",
+			loaded: "✅ | লোড করা হয়েছে কমান্ড \"%1\" সফলভাবে",
+			loadedError: "❌ | Failed এ load কমান্ড \"%1\" সহ ত্রুটি\n%2: %3",
+			loadedSuccess: "✅ | লোড করা হয়েছে সফলভাবে (%1) কমান্ড",
+			loadedFail: "❌ | Failed এ load (%1) কমান্ড\n%2",
+			openConsoleToSeeError: "👀 | Open console এ see ত্রুটি details",
+			missingCommandNameUnload: "⚠️ | অনুগ্রহ করে লিখুন the কমান্ড নাম আপনি want এ unload",
+			unloaded: "✅ | আনলোড করা হয়েছে কমান্ড \"%1\" সফলভাবে",
+			unloadedError: "❌ | Failed এ unload কমান্ড \"%1\" সহ ত্রুটি\n%2: %3",
+			missingUrlCodeOrFileName: "⚠️ | অনুগ্রহ করে লিখুন the url অথবা code এবং কমান্ড ফাইল নাম আপনি want এ install",
+			missingUrlOrCode: "⚠️ | অনুগ্রহ করে লিখুন the url অথবা code এর the কমান্ড ফাইল আপনি want এ install",
+			missingFileNameInstall: "⚠️ | অনুগ্রহ করে লিখুন the ফাইল নাম এ save the কমান্ড (সহ .js extension)",
+			invalidUrl: "⚠️ | অনুগ্রহ করে লিখুন a valid url",
+			invalidUrlOrCode: "⚠️ | Unable এ get কমান্ড code",
+			alreadExist: "⚠️ | The কমান্ড ফাইল ইতোমধ্যে exists, are আপনি sure আপনি want এ overwrite the old কমান্ড ফাইল?\nReact এ this বার্তা এ continue",
+			installed: "✅ | Installed কমান্ড \"%1\" সফলভাবে, the কমান্ড ফাইল is saved at %2",
+			installedError: "❌ | Failed এ install কমান্ড \"%1\" সহ ত্রুটি\n%2: %3",
+			missingFile: "⚠️ | কমান্ড ফাইল \"%1\" পাওয়া যায়নি",
+			invalidFileName: "⚠️ | অবৈধ কমান্ড ফাইল নাম",
+			unloadedFile: "✅ | আনলোড করা হয়েছে কমান্ড \"%1\""
+		
 		}
 	},
 

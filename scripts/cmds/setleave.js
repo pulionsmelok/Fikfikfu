@@ -12,7 +12,8 @@ module.exports = {
         description: {
         		vi: "Chỉnh sửa nội dung/bật/tắt tin nhắn tạm biệt thành viên rời khỏi nhóm chat của bạn",
         		en: "Edit content/turn on/off leave message when member leave your group chat"
-        	},
+        	,
+		bn: "Edit content/turn on/off leave বার্তা when member leave আপনার গ্রুপ chat"},
         category: "custom",
         guide: {
         		vi: {
@@ -53,7 +54,26 @@ module.exports = {
         				[`${__dirname}/assets/guide/setleave/setleave_en_1.png`]: "https://i.ibb.co/2FKJHJr/guide1.png"
         			}
         		}
-        	},
+        	,
+		bn: {
+        			body: "   {pn} on: চালু করুন leave বার্তা"
+        				+ "\n   {pn} off: বন্ধ করুন leave বার্তা"
+        				+ "\n   {pn} text [<content> | reset]: edit text content অথবা reset এ ডিফল্ট, available shortcuts:"
+        				+ "\n  + {userName}: নাম এর member who leave গ্রুপ"
+        				+ "\n  + {userNameTag}: নাম এর member who leave গ্রুপ (tag)"
+        				+ "\n  + {boxName}: নাম এর গ্রুপ chat"
+        				+ "\n  + {type}: leave/kicked by admin"
+        				+ "\n  + {session}: session in day"
+        				+ "\n\n   Example:"
+        				+ "\n    {pn} text {userName} has {type} গ্রুপ, see আপনি again 🤧"
+        				+ "\n"
+        				+ "\n   Reply অথবা send a বার্তা সহ ফাইল সহ content {pn} ফাইল: এ যোগ অ্যাটাচমেন্ট ফাইল এ leave বার্তা (ছবি, ভিডিও, অডিও)"
+        				+ "\n\nExample:"
+        				+ "\n   {pn} ফাইল reset: reset ফাইল",
+        			attachment: {
+        				[`${__dirname}/assets/guide/setleave/setleave_en_1.png`]: "https://i.ibb.co/2FKJHJr/guide1.png"
+        			}
+        		}},
     },
 
 	langs: {
@@ -78,6 +98,18 @@ module.exports = {
 			resetedFile: "Reseted leave message attachment file successfully",
 			missingFile: "Please reply this message with image/video/audio file",
 			addedFile: "Added %1 attachment file to your leave message"
+		},
+		bn: {
+			turnedOn: "চালু করা হয়েছে leave বার্তা সফলভাবে",
+			turnedOff: "বন্ধ করা হয়েছে leave বার্তা সফলভাবে",
+			missingContent: "অনুগ্রহ করে লিখুন content",
+			edited: "সম্পাদনা করা হয়েছে leave বার্তা content এর আপনার গ্রুপ এ:\n%1",
+			reseted: "রিসেট করা হয়েছে leave বার্তা content",
+			noFile: "No leave বার্তা অ্যাটাচমেন্ট ফাইল এ reset",
+			resetedFile: "রিসেট করা হয়েছে leave বার্তা অ্যাটাচমেন্ট ফাইল সফলভাবে",
+			missingFile: "অনুগ্রহ করে রিপ্লাই দিন this বার্তা সহ ছবি/ভিডিও/অডিও ফাইল",
+			addedFile: "যোগ করা হয়েছে %1 অ্যাটাচমেন্ট ফাইল এ আপনার leave বার্তা"
+		
 		}
 	},
 

@@ -30,12 +30,14 @@ module.exports = {
         description: {
         		vi: "Cho phép lệnh được dùng khi adminonly đang bật",
         		en: "Allow selected commands to work while adminonly is enabled"
-        	},
+        	,
+		bn: "Allow selected কমান্ডগুলো এ work while adminonly is enabled"},
         category: "owner",
         guide: {
         		vi: "{pn} add <command> | {pn} del <command> | {pn} list",
         		en: "{pn} add <command> | {pn} del <command> | {pn} list"
-        	},
+        	,
+		bn: "{pn} যোগ <কমান্ড> | {pn} del <কমান্ড> | {pn} তালিকা"},
     },
 
 	langs: {
@@ -48,6 +50,17 @@ module.exports = {
 			commandNotInList: "❌ Command \"%1\" is not in the ignore list.",
 			commandDeleted: "✅ Removed command \"%1\" from the adminonly ignore list.",
 			ignoreList: "📑 Adminonly ignore list:\n%1"
+		},
+		bn: {
+			missingCommandNameToAdd: "⚠️ অনুগ্রহ করে লিখুন a কমান্ড নাম.",
+			missingCommandNameToDelete: "⚠️ অনুগ্রহ করে লিখুন a কমান্ড নাম.",
+			commandNotFound: "❌ কমান্ড \"%1\" was পাওয়া যায়নি.",
+			commandAlreadyInList: "❌ কমান্ড \"%1\" is ইতোমধ্যে in the ignore তালিকা.",
+			commandAdded: "✅ যোগ করা হয়েছে কমান্ড \"%1\" এ the adminonly ignore তালিকা.",
+			commandNotInList: "❌ কমান্ড \"%1\" is not in the ignore তালিকা.",
+			commandDeleted: "✅ সরিয়ে দেওয়া হয়েছে কমান্ড \"%1\" থেকে the adminonly ignore তালিকা.",
+			ignoreList: "📑 Adminonly ignore তালিকা:\n%1"
+		
 		},
 		vi: {
 			missingCommandNameToAdd: "⚠️ Vui lòng nhập tên lệnh.",

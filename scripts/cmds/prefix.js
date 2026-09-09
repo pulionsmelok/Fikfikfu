@@ -27,7 +27,14 @@ module.exports = {
         			+ "\n   Example:"
         			+ "\n    {pn} # -g"
         			+ "\n\n   {pn} reset: change prefix in your box chat to default"
-        	},
+        	,
+		bn: "   {pn} <new prefix>: change new prefix in আপনার box chat"
+        			+ "\n   Example:"
+        			+ "\n    {pn} #"
+        			+ "\n\n   {pn} <new prefix> -g: change new prefix in system bot (only admin bot)"
+        			+ "\n   Example:"
+        			+ "\n    {pn} # -g"
+        			+ "\n\n   {pn} reset: change prefix in আপনার box chat এ ডিফল্ট"},
     },
 
 	langs: {
@@ -48,6 +55,16 @@ module.exports = {
 			successGlobal: "Changed prefix of system bot to: %1",
 			successThisThread: "Changed prefix in your box chat to: %1",
 			myPrefix: "🌐 System prefix: %1\n🛸 Your box chat prefix: %2"
+		},
+		bn: {
+			reset: "আপনার prefix has been reset এ ডিফল্ট: %1",
+			onlyAdmin: "শুধুমাত্র অ্যাডমিন can change prefix এর system bot",
+			confirmGlobal: "অনুগ্রহ করে এই বার্তায় রিঅ্যাক্ট করুন এ this বার্তা এ নিশ্চিত change prefix এর system bot",
+			confirmThisThread: "অনুগ্রহ করে এই বার্তায় রিঅ্যাক্ট করুন এ this বার্তা এ নিশ্চিত change prefix in আপনার box chat",
+			successGlobal: "পরিবর্তন করা হয়েছে prefix এর system bot এ: %1",
+			successThisThread: "পরিবর্তন করা হয়েছে prefix in আপনার box chat এ: %1",
+			myPrefix: "🌐 System prefix: %1\n🛸 আপনার box chat prefix: %2"
+		
 		}
 	},
 

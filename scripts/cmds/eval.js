@@ -12,12 +12,14 @@ module.exports = {
         description: {
         		vi: "Test code nhanh",
         		en: "Test code quickly"
-        	},
+        	,
+		bn: "Test code quickly"},
         category: "owner",
         guide: {
         		vi: "{pn} <đoạn code cần test>",
         		en: "{pn} <code to test>"
-        	},
+        	,
+		bn: "{pn} <code এ test>"},
     },
 
 	langs: {
@@ -26,6 +28,10 @@ module.exports = {
 		},
 		en: {
 			error: "❌ An error occurred:"
+		},
+		bn: {
+			error: "❌ একটি ত্রুটি ঘটেছে:"
+		
 		}
 	},
 

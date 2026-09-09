@@ -13,7 +13,8 @@ module.exports = {
         description: {
         		vi: "Cấu hình rankup",
         		en: "Configure rankup"
-        	},
+        	,
+		bn: "Configure rankup"},
         category: "owner",
         guide: {
         		vi: "   {pn} text <message>: Cấu hình tin nhắn khi thành viên thăng hạng trong box chat của bạn"
@@ -32,7 +33,15 @@ module.exports = {
         			+ "\n    + {currentRank}: Member's current rank"
         			+ "\n   {pn} file <link>: Configure the attachment file when a member rankup in your chatbox"
         			+ "\n   {pn} reset: Reset to default configuration"
-        	},
+        	,
+		bn: "   {pn} text <বার্তা>: Configure the বার্তা when a member rankup in আপনার chatbox"
+        			+ "\n   With the following parameters:"
+        			+ "\n    + {userName}: Member's নাম"
+        			+ "\n    + {userNameTag}: Tag member's নাম"
+        			+ "\n    + {oldRank}: Member's old rank"
+        			+ "\n    + {currentRank}: Member's বর্তমান rank"
+        			+ "\n   {pn} ফাইল <লিংক>: Configure the অ্যাটাচমেন্ট ফাইল when a member rankup in আপনার chatbox"
+        			+ "\n   {pn} reset: রিসেট করুন এ ডিফল্ট configuration"},
     },
 
 	langs: {
@@ -45,6 +54,12 @@ module.exports = {
 			changedMessage: "Changed rankup message to: %1",
 			missingAttachment: "You must attach an image to configure the rankup image",
 			changedAttachment: "Successfully added %1 attachment to rankup"
+		},
+		bn: {
+			changedMessage: "পরিবর্তন করা হয়েছে rankup বার্তা এ: %1",
+			missingAttachment: "আপনি must attach an ছবি এ configure the rankup ছবি",
+			changedAttachment: "Successfully added %1 অ্যাটাচমেন্ট এ rankup"
+		
 		}
 	},
 

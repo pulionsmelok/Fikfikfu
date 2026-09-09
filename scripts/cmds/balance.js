@@ -10,14 +10,17 @@ module.exports = {
         description: {
         		vi: "xem số tiền hiện có của bạn hoặc người được tag",
         		en: "view your money or the money of the tagged person"
-        	},
+        	,
+		bn: "view আপনার money অথবা the money এর the tagged person"},
         category: "economy",
         guide: {
         		vi: "   {pn}: xem số tiền của bạn"
         			+ "\n   {pn} <@tag>: xem số tiền của người được tag",
         		en: "   {pn}: view your money"
         			+ "\n   {pn} <@tag>: view the money of the tagged person"
-        	},
+        	,
+		bn: "   {pn}: view আপনার money"
+        			+ "\n   {pn} <@tag>: view the money এর the tagged person"},
     },
 
 	langs: {
@@ -28,6 +31,11 @@ module.exports = {
 		en: {
 			money: "You have %1$",
 			moneyOf: "%1 has %2$"
+		},
+		bn: {
+			money: "আপনার আছে %1$",
+			moneyOf: "%1 has %2$"
+		
 		}
 	},
 

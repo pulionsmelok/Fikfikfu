@@ -14,7 +14,8 @@ module.exports = {
     category: "study",
     guide: {
       en: "{pn} <song name>"
-    }
+    ,
+		bn: "{pn} <song নাম>"}
   },
 
   onStart: async function ({ message, args }) {

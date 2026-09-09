@@ -10,7 +10,8 @@ module.exports = {
         description: {
         		vi: "làm mới thông tin nhóm chat hoặc người dùng",
         		en: "refresh information of group chat or user"
-        	},
+        	,
+		bn: "refresh information এর গ্রুপ chat অথবা ব্যবহারকারী"},
         category: "box chat",
         guide: {
         		vi: "   {pn} [thread | group]: làm mới thông tin nhóm chat của bạn"
@@ -21,7 +22,11 @@ module.exports = {
         			+ "\n   {pn} group <threadID>: refresh information of group chat by ID"
         			+ "\n\n   {pn} user: refresh information of your user"
         			+ "\n   {pn} user [<userID> | @tag]: refresh information of user by ID"
-        	},
+        	,
+		bn: "   {pn} [thread | গ্রুপ]: refresh information এর আপনার গ্রুপ chat"
+        			+ "\n   {pn} গ্রুপ <threadID>: refresh information এর গ্রুপ chat by ID"
+        			+ "\n\n   {pn} ব্যবহারকারী: refresh information এর আপনার ব্যবহারকারী"
+        			+ "\n   {pn} ব্যবহারকারী [<userID> | @tag]: refresh information এর ব্যবহারকারী by ID"},
     },
 
 	langs: {
@@ -44,6 +49,17 @@ module.exports = {
 			refreshUserTargetSuccess: "✅ | Refresh information of user %1 successfully!",
 			errorRefreshMyUser: "❌ | Error when refresh information of your user",
 			errorRefreshUserTarget: "❌ | Error when refresh information of user %1"
+		},
+		bn: {
+			refreshMyThreadSuccess: "✅ | Refresh information এর আপনার গ্রুপ chat সফলভাবে!",
+			refreshThreadTargetSuccess: "✅ | Refresh information এর গ্রুপ chat %1 সফলভাবে!",
+			errorRefreshMyThread: "❌ | ত্রুটি when refresh information এর আপনার গ্রুপ chat",
+			errorRefreshThreadTarget: "❌ | ত্রুটি when refresh information এর গ্রুপ chat %1",
+			refreshMyUserSuccess: "✅ | Refresh information এর আপনার ব্যবহারকারী সফলভাবে!",
+			refreshUserTargetSuccess: "✅ | Refresh information এর ব্যবহারকারী %1 সফলভাবে!",
+			errorRefreshMyUser: "❌ | ত্রুটি when refresh information এর আপনার ব্যবহারকারী",
+			errorRefreshUserTarget: "❌ | ত্রুটি when refresh information এর ব্যবহারকারী %1"
+		
 		}
 	},
 

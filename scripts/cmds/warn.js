@@ -27,9 +27,11 @@ module.exports = {
         countDown: 5,
         role: 1,
         usePrefix: true,
-        description: { en: "Warn users (3 = ban+kick)" },
+        description: { en: "Warn users (3 = ban+kick)" ,
+		bn: "Warn ব্যবহারকারীরা (3 = ban+kick)"},
         category: "admin",
-        guide: { en: "{pn} [reason] (reply)\n{pn} <uid> [reason]" },
+        guide: { en: "{pn} [reason] (reply)\n{pn} <uid> [reason]" ,
+		bn: "{pn} [কারণ] (reply)\n{pn} <uid> [কারণ]"},
     },
 	onStart: async function ({ event, api, args, message, usersData }) {
 		try {

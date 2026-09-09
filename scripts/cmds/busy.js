@@ -13,14 +13,17 @@ module.exports = {
         description: {
         		vi: "bật chế độ không làm phiền, khi bạn được tag bot sẽ thông báo",
         		en: "turn on do not disturb mode, when you are tagged bot will notify"
-        	},
+        	,
+		bn: "turn on করবেন না disturb মোড, when আপনি are tagged bot will notify"},
         category: "box chat",
         guide: {
         		vi: "   {pn} [để trống | <lý do>]: bật chế độ không làm phiền"
         			+ "\n   {pn} off: tắt chế độ không làm phiền",
         		en: "   {pn} [empty | <reason>]: turn on do not disturb mode"
         			+ "\n   {pn} off: turn off do not disturb mode"
-        	},
+        	,
+		bn: "   {pn} [empty | <কারণ>]: turn on করবেন না disturb মোড"
+        			+ "\n   {pn} off: turn off করবেন না disturb মোড"},
     },
 
 	langs: {
@@ -39,6 +42,15 @@ module.exports = {
 			turnedOnWithoutReason: "✅ | Do not disturb mode has been turned on",
 			alreadyOn: "User %1 is currently busy",
 			alreadyOnWithReason: "User %1 is currently busy with reason: %2"
+		},
+		bn: {
+			turnedOff: "✅ | করবেন না disturb মোড has been turned off",
+			turnedOn: "✅ | করবেন না disturb মোড has been turned on",
+			turnedOnWithReason: "✅ | করবেন না disturb মোড has been turned on সহ কারণ: %1",
+			turnedOnWithoutReason: "✅ | করবেন না disturb মোড has been turned on",
+			alreadyOn: "ব্যবহারকারী %1 is currently busy",
+			alreadyOnWithReason: "ব্যবহারকারী %1 is currently busy সহ কারণ: %2"
+		
 		}
 	},
 

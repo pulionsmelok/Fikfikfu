@@ -7,9 +7,11 @@ module.exports = {
         countDown: 3,
         role: 0,
         usePrefix: true,
-        description: { en: "Info from forwarded message" },
+        description: { en: "Info from forwarded message" ,
+		bn: "Info থেকে forwarded বার্তা"},
         category: "info",
-        guide: { en: "Reply to a forwarded message with {pn}" },
+        guide: { en: "Reply to a forwarded message with {pn}" ,
+		bn: "Reply এ a forwarded বার্তা সহ {pn}"},
     },
 	onStart: async function ({ event, api, message }) {
 		try {

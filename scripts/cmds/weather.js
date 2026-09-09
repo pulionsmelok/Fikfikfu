@@ -31,12 +31,14 @@ module.exports = {
         description: {
         		vi: "xem dự báo thời tiết hiện tại và 5 ngày sau",
         		en: "view the current and next 5 days weather forecast"
-        	},
+        	,
+		bn: "view the বর্তমান এবং next 5 days আবহাওয়া forecast"},
         category: "other",
         guide: {
         		vi: "{pn} <địa điểm>",
         		en: "{pn} <location>"
-        	},
+        	,
+		bn: "{pn} <location>"},
         envGlobal: {
         		weatherApiKey: "d7e795ae6a0d44aaa8abb1a0a7ac19e4"
         	},
@@ -54,6 +56,13 @@ module.exports = {
 			notFound: "Location not found: %1",
 			error: "An error has occurred: %1",
 			today: "Today's weather: %1\n%2\n🌡 Low - high temperature %3°C - %4°C\n🌡 Feels like %5°C - %6°C\n🌅 Sunrise %7\n🌄 Sunset %8\n🌃 Moonrise %9\n🏙️ Moonset %10\n🌞 Day: %11\n🌙 Night: %12"
+		},
+		bn: {
+			syntaxError: "অনুগ্রহ করে লিখুন a location",
+			notFound: "Location পাওয়া যায়নি: %1",
+			error: "একটি ত্রুটি ঘটেছে: %1",
+			today: "আজ's আবহাওয়া: %1\n%2\n🌡 Low - high temperature %3°C - %4°C\n🌡 Feels like %5°C - %6°C\n🌅 Sunrise %7\n🌄 Sunset %8\n🌃 Moonrise %9\n🏙️ Moonset %10\n🌞 Day: %11\n🌙 Night: %12"
+		
 		}
 	},
 

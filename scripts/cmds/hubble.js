@@ -15,15 +15,23 @@ module.exports = {
         countDown: 5,
         role: 0,
         usePrefix: true,
-        description: { vi: "Xem ảnh từ Hubble", en: "View Hubble images" },
+        description: { vi: "Xem ảnh từ Hubble", en: "View Hubble images" ,
+		bn: "View Hubble images"},
         category: "owner",
-        guide: { en: "{pn} <MM-DD>" },
+        guide: { en: "{pn} <MM-DD>" ,
+		bn: "{pn} <MM-DD>"},
     },
 	langs: {
 		en: {
 			invalidDate: "The date you entered is invalid. Use MM-DD, for example 05-15.",
 			noImage: "No Hubble image was found for this date.",
 			error: "❌ Failed to load the Hubble image."
+		},
+		bn: {
+			invalidDate: "The তারিখ আপনি entered is অবৈধ. Use MM-DD, জন্য example 05-15.",
+			noImage: "No Hubble ছবি was found জন্য this তারিখ.",
+			error: "❌ Failed এ load the Hubble ছবি."
+		
 		},
 		vi: {
 			invalidDate: "Ngày không hợp lệ. Hãy dùng MM-DD, ví dụ 05-15.",

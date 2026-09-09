@@ -14,11 +14,13 @@ module.exports = {
         description: {
         		vi: "Bật/tắt thông báo level up",
         		en: "Turn on/off level up notification"
-        	},
+        	,
+		bn: "চালু করুন/off level up বিজ্ঞপ্তি"},
         category: "rank",
         guide: {
         		en: "{pn} [on | off]"
-        	},
+        	,
+		bn: "{pn} [on | off]"},
         envConfig: {
         		deltaNext: 5
         	},
@@ -36,6 +38,13 @@ module.exports = {
 			turnedOn: "Turned on level up notification",
 			turnedOff: "Turned off level up notification",
 			notiMessage: "🎉🎉 Congratulations on reaching level %1"
+		},
+		bn: {
+			syntaxError: "ভুল সিনট্যাক্স, only use {pn} on অথবা {pn} off",
+			turnedOn: "চালু করা হয়েছে level up বিজ্ঞপ্তি",
+			turnedOff: "বন্ধ করা হয়েছে level up বিজ্ঞপ্তি",
+			notiMessage: "🎉🎉 অভিনন্দন on reaching level %1"
+		
 		}
 	},
 
