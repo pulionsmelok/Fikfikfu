@@ -1,61 +1,49 @@
-const moment = require("moment-timezone");
-
 module.exports = {
   config: {
-        name: "info",
-        aliases: ["owner"],
-        version: "1.0.0",
-        author: "SK-SIDDIK-KHAN",
-        countDown: 5,
-        role: 0,
-        usePrefix: true,
-        description: "Owner information",
-        category: "owner",
-        guide: "{p}info",
-        cooldown: 5,
-    },
-
-  onStart: async ({ event, bot }) => {
-    try {
-      const chatId = event.chat.id;
-      const botName = "SIDDIK-BOT";
-      const botPrefix = "/";
-      const authorName = "SK-SIDDIK-KHAN";
-      const ownAge = "18";
-      const teamName = "VAI BROTHER ADDA";
-      const authorFB = "https://m.me/SK.SIDDIK.HERE";
-      const authortg = "https://t.me/busy1here";
-      const link = "https://files.catbox.moe/gct1ii.jpg";
-
-      const now = moment().tz("Asia/Dhaka");
-      const date = now.format("MMMM Do YYYY");
-      const time = now.format("h:mm:ss A");
-      const uptime = Math.floor(process.uptime());
-      const seconds = uptime % 60;
-      const minutes = Math.floor((uptime / 60) % 60);
-      const hours = Math.floor((uptime / 3600) % 24);
-      const days = Math.floor(uptime / 86400);
-      const uptimeString = `${days} d ${hours} h ${minutes} m ${seconds} s`;
-
-      const caption = `♡   ∩_∩\n („• ֊ •„)♡\n╭─∪∪───────────⟡\n├‣ Bot & Owner Info\n├──────────────⟡\n├‣ Bot Name: ${botName}\n├‣ Prefix: ${botPrefix}\n├‣ Owner: ${authorName}\n├‣ Age: ${ownAge}\n├‣ Fb: ${authorFB}\n├‣ Tg: ${authortg}\n├‣ Date: ${date}\n├‣ Time: ${time}\n├‣ Team: ${teamName}\n├‣ Uptime: ${uptimeString}\n╰──────────────⟡`;
-
-      const sentMsg = await bot.sendPhoto(chatId, link, {
-        caption,
-        reply_markup: {
-          inline_keyboard: [[
-            { text: "Facebook", url: authorFB },
-            { text: "Telegram", url: authortg }
-          ]]
-        }
-      });
-
-      setTimeout(() => {
-        if (sentMsg?.message_id) {
-          bot.deleteMessage(chatId, sentMsg.message_id).catch(() => {});
-        }
-      }, 40000);
-    } catch (error) {
-      console.error(error);
+    name: "info",
+    aliases: ["in40"],
+    version: "2.2",
+    author: "SK-SIDDIK-KHAN",
+    countDown: 5,
+    role: 0,
+    category: "Information",
+  },
+ 
+  onStart: async function ({ api, event }) {
+    await sendInfo(api, event);
+  },
+ 
+  onChat: async function ({ api, event }) {
+    if (event.body?.toLowerCase() === "info") {
+      await sendInfo(api, event);
     }
   }
 };
+ 
+async function sendInfo(api, event) {
+  const videoLink = "https://drive.google.com/uc?export=download&id=12WE_-Fg1YzO1AEI5dEPVehyd93FIge-j";
+ 
+  const msg = `♡   ∩_∩
+ （„• ֊ •„)♡
+╭─∪∪───────────⟡
+├‣ 𝗔𝗗𝗠𝗜𝗡 𝗜𝗡𝗙𝗢𝗥𝗠𝗔𝗧𝗧𝗢𝗡
+├──────────────⟡
+├‣ 𝗕𝗢𝗧 𝗔𝗗𝗠𝗜𝗡 : 𝗦𝗞-𝗦𝗜𝗗𝗗𝗜𝗞
+├──────────────⟡
+├‣𝗔𝗗𝗗𝗥𝗘𝗦𝗦: 𝗡𝗔𝗢𝗚𝗔𝗢𝗡
+├──────────────⟡
+├‣ 𝗙𝗕: 𝗧𝗔𝗡𝙕𝙄𝘿 𝙃𝘼𝙎𝘼𝙉 𝙏𝘼𝙈𝙄𝙈
+├──────────────⟡
+├‣ 𝗧𝗚 : @busy1here
+├──────────────⟡
+├‣ 𝗕𝗢𝗧 𝗪𝗢𝗡𝗘𝗥: 𝗦𝗜𝗗𝗗𝗜𝗞 
+╰──────────────⟡ `;
+ 
+  const stream = await global.utils.getStreamFromURL(videoLink);
+ 
+  api.sendMessage(
+    { body: msg, attachment: stream },
+    event.threadID,
+    event.messageID
+  );
+}
