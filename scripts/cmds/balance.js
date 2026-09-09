@@ -169,7 +169,7 @@ async function getTargetUser({ bot, event, args = [], usersData }) {
 
 module.exports = {
 	config: {
-    name: "balahnce",
+    name: "balance",
     aliases: ["ball","bal"],
     version: "10.0",
     author: "SK-SIDDIK-KHAN",
