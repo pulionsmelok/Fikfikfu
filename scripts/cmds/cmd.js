@@ -1233,6 +1233,39 @@ module.exports = {
 		getLang
 	}) {
 
+		// Callback handlers are executed directly by handlerAction, so
+		// getLang is not injected there. Build it locally from this command's
+		// own langs table to prevent: TypeError: getLang is not a function.
+		if (typeof getLang !== "function") {
+			const configuredLang = String(
+				event?.lang ||
+				event?.language ||
+				global.GoatBot?.config?.language ||
+				"en"
+			).toLowerCase();
+
+			const langCode = configuredLang.split(/[-_]/)[0];
+			const langTable = module.exports.langs || {};
+
+			getLang = (key, ...args) => {
+				let text = langTable?.[langCode]?.[key];
+				if (text === undefined)
+					text = langTable?.en?.[key];
+
+				if (text === undefined)
+					return `Can't find text: "${key}"`;
+
+				text = String(text);
+				for (let i = args.length - 1; i >= 0; i--)
+					text = text.replace(
+						new RegExp(`%${i + 1}`, "g"),
+						String(args[i] ?? "")
+					);
+
+				return text;
+			};
+		}
+
 		const data =
 			String(event?.data || "");
 
