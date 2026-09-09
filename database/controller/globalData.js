@@ -31,7 +31,7 @@ const { creatingGlobalData } = global.client.database;
 module.exports = async function (databaseType, globalModel, fakeGraphql) {
 	let GlobalData = [];
 	const pathGlobalData = path.join(process.env.JSON_DATA_DIR || path.join(__dirname, "..", "data"), "globalData.json");
-	mkdirpSync(path.dirname(const));
+	mkdirpSync(path.dirname(pathGlobalData));
 
 	switch (databaseType) {
 		case "mongodb":

@@ -31,7 +31,7 @@ const { creatingDashBoardData } = global.client.database;
 module.exports = async function (databaseType, dashBoardModel, fakeGraphql) {
 	let Dashboard = [];
 	const pathDashBoardData = path.join(process.env.JSON_DATA_DIR || path.join(__dirname, "..", "data"), "dashBoardData.json");
-	mkdirpSync(path.dirname(const));
+	mkdirpSync(path.dirname(pathDashBoardData));
 
 	switch (databaseType) {
 		case "mongodb":

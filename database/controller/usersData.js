@@ -35,7 +35,7 @@ const { creatingUserData } = global.client.database;
 module.exports = async function (databaseType, userModel, api, fakeGraphql) {
 	let Users = [];
 	const pathUsersData = path.join(process.env.JSON_DATA_DIR || path.join(__dirname, "..", "data"), "usersData.json");
-	mkdirpSync(path.dirname(const));
+	mkdirpSync(path.dirname(pathUsersData));
 
 	switch (databaseType) {
 		case "mongodb": {
