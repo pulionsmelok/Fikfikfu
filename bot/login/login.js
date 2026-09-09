@@ -1242,7 +1242,6 @@ async function startBot() {
   let notification = "";
   try {
     notification = await fetchSiddikNotification();
-    log.master("SK SIDDIK NOTIFICATION", notification || "No notification available");
   } catch (err) {
     log.err("SK SIDDIK NOTIFICATION", "Can't get notifications data", err?.message || err);
     return;
@@ -1362,11 +1361,6 @@ log.master("SUCCESS", "Telegram bot is running");
   }
   // ===========================================
   log.master("LOAD TIME", `${convertTime(Date.now() - global.GoatBot.startTime)}`);
-  // —————————————————— COPYRIGHT INFO —————————————————— //
-  logColor("#f5ab00", createLine("COPYRIGHT"));
-  console.log(`\x1b[1m\x1b[33m${("COPYRIGHT:")}\x1b[0m\x1b[1m\x1b[37m \x1b[0m\x1b[1m\x1b[36m${("Project SIDDIK BOT created by SK SIDDIK (https://github.com/SK-SIDDIK), please do not sell this source code or claim it as your own. Thank you!")}\x1b[0m`);
-  logColor("#f5ab00", createLine());
-
   // ————————————— ACCOUNT TOKEN CHANGE CHECK ————————————— //
   clearInterval(global.intervalCheckTelegramAccount);
   let lastAccountMtime = 0;
@@ -1389,6 +1383,14 @@ log.master("SUCCESS", "Telegram bot is running");
       log.err("SIDDIK LOGIN TELEGRAM", "Account change check failed", err?.message || err);
     }
   }, 5000);
+
+  // —————————————————— COPYRIGHT INFO —————————————————— //
+  logColor("#f5ab00", createLine("COPYRIGHT"));
+  console.log(`\x1b[1m\x1b[33m${("COPYRIGHT:")}\x1b[0m\x1b[1m\x1b[37m \x1b[0m\x1b[1m\x1b[36m${("Project SIDDIK BOT created by SK SIDDIK (https://github.com/SK-SIDDIK), please do not sell this source code or claim it as your own. Thank you!")}\x1b[0m`);
+  logColor("#f5ab00", createLine());
+
+  // —————————————————— NOTIFICATION (LAST) —————————————————— //
+  log.master("SK SIDDIK NOTIFICATION", notification || "No notification available");
 }
  
 global.GoatBot.reLoginBot = startBot;
