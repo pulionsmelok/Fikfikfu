@@ -1257,9 +1257,6 @@ async function startBot() {
     }
   }
 
-  if (!updateAvailable) {
-    log.master("NOTIFICATION", String(notification).trim());
-  }
  
   const callback = createCallBackListen(api, deps, dataGban);
   await stopListening(api);
@@ -1333,4 +1330,3 @@ startBot().catch((err) => {
   global.statusAccountBot = "can't login";
   log.err("LOGIN TELEGRAM", "Startup error", err);
 });
- 
