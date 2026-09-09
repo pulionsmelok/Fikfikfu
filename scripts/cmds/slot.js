@@ -81,12 +81,9 @@ module.exports = {
     const winRoll = Math.random() * 100;
     let forceMatch = 0;
 
-    const winRoll = Math.random() * 100;
-let forceMatch = 0;
-
-if (winRoll <= 0.5) forceMatch = 4;
-else if (winRoll <= 5) forceMatch = 3;
-else if (winRoll <= 45) forceMatch = 2;
+   if (winRoll <= 0.5) forceMatch = 4;
+   else if (winRoll <= 5) forceMatch = 3;
+   else if (winRoll <= 45) forceMatch = 2;
 
     if (forceMatch > 0) {
       const luckyItem = items[Math.floor(Math.random() * items.length)];
