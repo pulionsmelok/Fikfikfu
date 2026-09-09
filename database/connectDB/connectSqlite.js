@@ -1,6 +1,6 @@
 module.exports = async function () {
 	const { Sequelize } = require("sequelize");
-	const path = __dirname + "/../data/data.sqlite";
+	const path = process.env.SQLITE_DB_PATH || __dirname + "/../data/data.sqlite";
 	const sequelize = new Sequelize({
 		dialect: "sqlite",
 		host: path,
