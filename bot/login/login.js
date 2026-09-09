@@ -3,7 +3,6 @@ process.stdout.write("\x1b]2;Goat Bot V2 - Telegram\x1b\\");
 const fs = require("fs-extra");
 const path = require("path");
 const https = require("https");
-const telegramAgent = new https.Agent({ keepAlive: true, maxSockets: 50, maxFreeSockets: 10 });
 const { URL } = require("url");
 const axios = require("axios");
 const gradient = require("gradient-string");
@@ -24,7 +23,6 @@ const {
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const currentVersion = require(`${process.cwd()}/package.json`).version;
  
-// ———————————————— VERSION CHECK ———————————————— //
 function compareVersion(version1, version2) {
 	const v1 = String(version1).split(".").map(Number);
 	const v2 = String(version2).split(".").map(Number);
@@ -40,7 +38,6 @@ function compareVersion(version1, version2) {
 const config = global.GoatBot.config;
 const dirAccount = global.client.dirAccount;
  
-// ———————————————— LINE SYSTEM ———————————————— //
 function createLine(content, isMaxWidth = false) {
   let width = process.stdout.columns || 80;
   if (!isMaxWidth && width > 50) width = 50;
@@ -50,8 +47,8 @@ function createLine(content, isMaxWidth = false) {
   const left = Math.floor(lengthLine / 2);
   return `${"─".repeat(left)}${content}${"─".repeat(lengthLine - left)}`;
 }
-
-// ———————————————— TEXT SYSTEM ———————————————— //
+ 
+ 
 function centerText(text, length) {
   const width = process.stdout.columns || 80;
   const textLength = length || String(text).length;
@@ -59,7 +56,6 @@ function centerText(text, length) {
   console.log(" ".repeat(leftPadding) + text);
 }
  
-// ———————————————— STARTUP TITLE ———————————————— //
 function printStartupTitle() {
   const titles = [
     [
@@ -100,14 +96,15 @@ function printStartupTitle() {
  
 printStartupTitle();
  
-// ———————————————— TOKEN SYSTEM ———————————————— //
 function readTokenFile() {
   if (!fs.existsSync(dirAccount)) fs.writeFileSync(dirAccount, "");
   const raw = fs.readFileSync(dirAccount, "utf8").trim();
   if (!raw) return "";
-
+ 
   
-
+  
+  
+  
   try {
     if (raw.startsWith("{")) {
       const obj = JSON.parse(raw);
@@ -122,13 +119,11 @@ function readTokenFile() {
   return tokenLine ? tokenLine.replace(/^BOT_TOKEN\s*=\s*/i, "").trim() : raw.split(/\r?\n/)[0].trim();
 }
  
-// ———————————————— TOKEN SAVE ———————————————— //
 function writeTokenIfNeeded(token) {
   const raw = fs.existsSync(dirAccount) ? fs.readFileSync(dirAccount, "utf8") : "";
   if (!raw.trim() && token) fs.writeFileSync(dirAccount, token);
 }
  
-// ———————————————— HTTP REQUEST ———————————————— //
 function requestRaw(url, options = {}, body = null) {
   return new Promise((resolve, reject) => {
     const target = new URL(url);
@@ -155,7 +150,6 @@ function requestRaw(url, options = {}, body = null) {
   });
 }
  
-// ———————————————— FORM ENCODE ———————————————— //
 function encodeForm(data) {
   return Object.entries(data)
     .filter(([, value]) => value !== undefined && value !== null)
@@ -163,7 +157,6 @@ function encodeForm(data) {
     .join("&");
 }
  
-// ———————————————— MULTIPART REQUEST ———————————————— //
 async function multipartRequest(url, fields, file) {
   const boundary = `----GoatBotBoundary${randomString(18)}`;
   const chunks = [];
@@ -197,7 +190,6 @@ async function multipartRequest(url, fields, file) {
   return json.result;
 }
  
-// ———————————————— BUFFER SYSTEM ———————————————— //
 async function collectBuffer(value) {
   if (Buffer.isBuffer(value)) return value;
   if (typeof value === "string") {
@@ -214,20 +206,17 @@ async function collectBuffer(value) {
   return null;
 }
  
-// ———————————————— FILE NAME ———————————————— //
 function filenameFor(value, fallback = "file.bin") {
   if (typeof value === "string") return path.basename(value.split("?")[0]) || fallback;
   if (value && value.path) return path.basename(value.path) || fallback;
   return fallback;
 }
  
-// ———————————————— FILE EXTENSION ———————————————— //
 function extOf(name) {
   const ext = path.extname(name || "").toLowerCase();
   return ext || ".bin";
 }
  
-// ———————————————— ATTACHMENT TYPE ———————————————— //
 function attachmentType(value, name) {
   const ext = extOf(name);
   if ([".jpg", ".jpeg", ".png", ".webp"].includes(ext)) return "photo";
@@ -237,12 +226,10 @@ function attachmentType(value, name) {
   return "file";
 }
  
-// ———————————————— ID NORMALIZER ———————————————— //
 function normalizeId(value) {
   return value === undefined || value === null ? "" : String(value);
 }
  
-// ———————————————— BUTTON SYSTEM ———————————————— //
 function normalizeInlineKeyboard(buttons) {
   if (!buttons) return null;
   let rows = Array.isArray(buttons) ? buttons : [buttons];
@@ -264,7 +251,6 @@ function normalizeInlineKeyboard(buttons) {
   }).filter(Boolean)).filter(row => row.length);
 }
  
-// ———————————————— ATTACHMENT SYSTEM ———————————————— //
 function makeAttachment(fileId, type, name, botApi) {
   const attachment = {
     type,
@@ -275,7 +261,8 @@ function makeAttachment(fileId, type, name, botApi) {
     width: 0,
     height: 0,
   };
-
+  
+  
   attachment.getUrl = async () => {
     if (!attachment.url) attachment.url = await botApi.fileUrl(fileId);
     return attachment.url;
@@ -283,7 +270,6 @@ function makeAttachment(fileId, type, name, botApi) {
   return attachment;
 }
  
-// ———————————————— TELEGRAM API ———————————————— //
 class TelegramApi {
   constructor(token) {
     this.token = token;
@@ -297,16 +283,9 @@ class TelegramApi {
     this.chatMembers = new Map();
     this.messageCache = new Map();
     this.options = {};
-    this.rateLimitedUntil = 0;
-    this.rateLimitWait = null;
   }
  
   async call(method, params = {}) {
-    const waitForRateLimit = async () => {
-      const remaining = this.rateLimitedUntil - Date.now();
-      if (remaining > 0) await sleep(remaining);
-    };
-    await waitForRateLimit();
     const body = encodeForm(params);
     const result = await requestRaw(`${this.base}/${method}`, {
       method: "POST",
@@ -316,10 +295,6 @@ class TelegramApi {
     let json;
     try { json = JSON.parse(result.data.toString("utf8")); } catch (_) { throw new Error("Invalid Telegram response"); }
     if (!json.ok) {
-      if (json.error_code === 429) {
-        const retryAfter = Math.max(1, Number(json.parameters?.retry_after || 1));
-        this.rateLimitedUntil = Math.max(this.rateLimitedUntil, Date.now() + retryAfter * 1000);
-      }
       const error = new Error(json.description || `Telegram API ${method} failed`);
       error.response = json;
       throw error;
@@ -362,7 +337,6 @@ class TelegramApi {
   }
  
   async sendMessage(form, threadID, callback, replyToMessageID) {
-
     const chatId = normalizeId(threadID);
     if (!chatId || chatId === "undefined" || chatId === "null") {
       const error = new Error("Invalid threadID. Use api.sendMessage(message, event.threadID).");
@@ -404,7 +378,8 @@ class TelegramApi {
     }
     if (replyId) base.reply_parameters = { message_id: Number(replyId) };
     if (form && typeof form === "object" && form.mentions) {
-
+      
+      
       const entities = [];
       let text = body;
       for (const mention of form.mentions) {
@@ -425,7 +400,8 @@ class TelegramApi {
     if (!attachments.length) {
       result = await this.call("sendMessage", { ...base, text: body || "\u200b" });
     } else {
-
+      
+      
       for (let i = 0; i < attachments.length; i++) {
         const item = attachments[i];
         let value = item?.url || item?.fileID || item;
@@ -529,7 +505,7 @@ class TelegramApi {
   async editMessageText(a, b, c, d, e) {
     if (typeof a === "object" && a !== null) return this.call("editMessageText", a);
     if (typeof b === "object" && b !== null && !c) {
-      
+      // Telegram-style: editMessageText(text, {chat_id, message_id, ...options})
       if (b.chat_id !== undefined || b.message_id !== undefined) {
         const { chat_id, message_id, ...opts } = b;
         return this.call("editMessageText", { chat_id: normalizeId(chat_id), message_id: Number(message_id), text: String(a || ""), ...opts });
@@ -837,33 +813,6 @@ class TelegramApi {
       };
     }
     event.attachments = await this.attachmentsFromMessage(msg);
-
-    if (Array.isArray(msg.new_chat_members) && msg.new_chat_members.length) {
-      event.type = "event";
-      event.logMessageType = "log:subscribe";
-      event.logMessageData = {
-        addedParticipants: msg.new_chat_members.map(u => ({
-          userFbId: normalizeId(u.id),
-          userFbName: [u.first_name, u.last_name].filter(Boolean).join(" ") || u.username || `User ${u.id}`,
-          fullName: [u.first_name, u.last_name].filter(Boolean).join(" ") || u.username || `User ${u.id}`,
-          is_bot: !!u.is_bot,
-          username: u.username || null,
-          first_name: u.first_name || null,
-          last_name: u.last_name || null
-        }))
-      };
-      event.new_chat_members = msg.new_chat_members;
-      event.participantIDs = msg.new_chat_members.map(u => normalizeId(u.id));
-    } else if (msg.left_chat_member) {
-      const left = msg.left_chat_member;
-      event.type = "event";
-      event.logMessageType = "log:unsubscribe";
-      event.logMessageData = {
-        leftParticipantFbId: normalizeId(left.id)
-      };
-      event.left_chat_member = left;
-      event.participantIDs = [normalizeId(left.id)];
-    }
  
     const known = this.chatMembers.get(event.threadID) || new Map();
     if (from.id) known.set(normalizeId(from.id), { id: normalizeId(from.id), name: [from.first_name, from.last_name].filter(Boolean).join(" ") || from.username || `User ${from.id}`, gender: null, vanity: from.username || null });
@@ -1007,41 +956,24 @@ class TelegramApi {
         timeout: 25,
         allowed_updates: JSON.stringify(["message", "edited_message", "channel_post", "callback_query", "message_reaction", "my_chat_member", "chat_member", "chat_join_request"]),
       });
-      // Dispatch every update independently. Do not await one event before
-      // converting/dispatching the next one: a slow command (for example /hi
-      // while it is waiting for an API response) must never hold up newer
-      // commands from the same chat or another chat.
       for (const update of updates) {
         this.offset = Math.max(this.offset, Number(update.update_id) + 1);
-        Promise.resolve().then(async () => {
-          try {
-            const event = await this.eventFromUpdate(update);
-            if (!event) return;
-
-            // Deliberately do not await the command handler here. Each update
-            // owns its own promise so long-running commands cannot serialize
-            // the Telegram update stream.
-            return callback(null, event);
-          } catch (err) {
-            try {
-              await callback(err);
-            } catch (callbackErr) {
-              try {
-                console.error("[TELEGRAM CALLBACK ERROR]", callbackErr?.stack || callbackErr);
-              } catch (_) {}
-            }
-          }
-        }).catch((err) => {
-          try {
-            console.error("[TELEGRAM EVENT DISPATCH]", err?.stack || err);
-          } catch (_) {}
-        });
+        try {
+          const event = await this.eventFromUpdate(update);
+          if (event) await callback(null, event);
+        } catch (err) {
+          await callback(err);
+        }
       }
     } catch (err) {
-      await callback(err);
-      await sleep(2500);
+      const description = String(err?.response?.description || err?.message || "");
+      if (/409\s*[:\-]?\s*Conflict|terminated by other getUpdates request/i.test(description)) {
+        await sleep(5000);
+      } else {
+        await callback(err);
+        await sleep(2500);
+      }
     }
-    this.pollInFlight = false;
     if (this.running) this.pollingHandle = setImmediate(() => this.poll(callback));
   }
  
@@ -1054,7 +986,6 @@ class TelegramApi {
   }
 }
  
-// ———————————————— LOAD DATA & SCRIPTS ———————————————— //
 async function loadDataAndScripts(api) {
   const {
     threadModel,
@@ -1113,7 +1044,9 @@ function isBannedFromGban(dataGban, id) {
   if (!item.toDate) return true;
   return Date.now() < new Date(item.toDate).getTime();
 }
- 
+
+// ———————————————————— CHECK BOT GBAN ————————————————————— //
+
 async function checkGban(api) {
   const dataGban = await fetchGban();
   const botID = api.getCurrentUserID();
@@ -1159,7 +1092,6 @@ async function stopListening(api) {
   if (key) callbackListenTime[key] = () => {};
 }
  
-// ———————————————— CALLBACK LISTENER ———————————————— //
 function createCallBackListen(api, deps, dataGban) {
   const key = randomString(10) + Date.now();
   const callback = async (error, event) => {
@@ -1226,59 +1158,10 @@ function createCallBackListen(api, deps, dataGban) {
   return callback;
 }
  
-// ———————————————— START BOT ———————————————— //
+// ————————————————— START BOT ————————————————— //
+
 async function startBot() {
   console.log(colors.hex("#f5ab00")(createLine("START TELEGRAM LOGIN", true)));
-
-  
-  let updateAvailable = false;
-  let latestVersion = null;
-
-  
-  const versionUrls = [
-    "https://raw.githubusercontent.com/ntkhang03/Goat-Bot-V2/master/package.json",
-    "https://raw.githubusercontent.com/ntkhang03/Goat-Bot-V2/main/package.json"
-  ];
- 
-  for (const url of versionUrls) {
-    try {
-      const { data } = await axios.get(url, {
-        timeout: 15000,
-        headers: {
-          "User-Agent": "Mozilla/5.0 (GoatBot-V2 Update Checker)",
-          "Accept": "application/json,text/plain,*/*"
-        }
-      });
- 
-      if (data?.version) {
-        latestVersion = String(data.version).trim();
-        break;
-      }
-    }
-    catch (_) {
-      
-    }
-  }
- 
-  if (latestVersion) {
-    if (compareVersion(currentVersion, latestVersion) >= 0) {
-      log.info(
-        "UPDATE",
-        `✅ | You are using the latest version of GoatBot V2 (v${currentVersion}).`
-      );
-    }
-    else {
-      updateAvailable = true;
-      log.info(
-        "UPDATE",
-        `ℹ️ | You are using the old version of GoatBot V2 (v${currentVersion}). Latest version: v${latestVersion}.`
-      );
-    }
-  }
-  else {
-    
-    log.warn("UPDATE", "⚠️ | Update status could not be checked right now.");
-  }
  
   let token = readTokenFile();
   if (!/^\d{6,12}:[A-Za-z0-9_-]{20,}$/.test(token)) {
@@ -1297,6 +1180,7 @@ async function startBot() {
   global.GoatBot.Listening = null;
   global.statusAccountBot = "good";
  
+  // —————————————————— BOT INFO —————————————————— //
   logColor("#f5ab00", createLine("BOT INFO"));
   log.info("NODE VERSION", process.version);
   log.info("PROJECT VERSION", currentVersion);
@@ -1322,7 +1206,8 @@ async function startBot() {
   }
  
   const deps = await loadDataAndScripts(api);
-
+ 
+  
   
   if (global.GoatBot.config.autoLoadScripts?.enable === true) {
     const watch = fs.watch;
@@ -1360,6 +1245,7 @@ async function startBot() {
     reload("events");
   }
  
+  // ————————————————— ADMIN BOT ————————————————— //
   logColor("#f5ab00", createLine("ADMIN BOT"));
   let i = 0;
   for (const uid of global.GoatBot.config.adminBot || []) {
@@ -1370,7 +1256,7 @@ async function startBot() {
       log.master("ADMINBOT", `[${++i}] ${uid}`);
     }
   }
-  
+
   if (!updateAvailable) {
     log.master("NOTIFICATION", String(notification).trim());
   }
@@ -1379,7 +1265,8 @@ async function startBot() {
   await stopListening(api);
   global.GoatBot.Listening = api.polling(callback);
   global.GoatBot.callBackListen = callback;
-
+ 
+  
   const restartConfig = global.GoatBot.config.restartTelegramPolling || {};
   if (restartConfig.enable === true && Number(restartConfig.timeRestart) > 0) {
     clearInterval(global.intervalRestartTelegramPolling);
@@ -1396,6 +1283,7 @@ async function startBot() {
   }
 log.master("SUCCESS", "Telegram bot is running");
 
+  // ————————————— STARTUP NOTIFY SYSTEM ————————————— //
   try {
     const cfg = global.GoatBot.config || {};
     const botName = cfg.nickNameBot || api.botInfo?.first_name || api.botInfo?.username || "GoatBot";
@@ -1432,9 +1320,9 @@ log.master("SUCCESS", "Telegram bot is running");
   } catch (e) {
     try { log.err("STARTUP_NOTIFY", e?.message || e); } catch (_) {}
   }
-  
+  // ===========================================
   log.master("LOAD TIME", `${convertTime(Date.now() - global.GoatBot.startTime)}`);
-  
+  // —————————————————— COPYRIGHT INFO —————————————————— //
   logColor("#f5ab00", createLine("COPYRIGHT"));
   console.log(`\x1b[1m\x1b[33m${("COPYRIGHT:")}\x1b[0m\x1b[1m\x1b[37m \x1b[0m\x1b[1m\x1b[36m${("Project GoatBot v2 created by ntkhang03 (https://github.com/ntkhang03), please do not sell this source code or claim it as your own. Thank you!")}\x1b[0m`);
   logColor("#f5ab00", createLine());
