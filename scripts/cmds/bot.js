@@ -79,7 +79,7 @@ module.exports = {
         version: "9.0.0",
         author: "SK-SIDDIK-KHAN",
         role: 0,
-        usePrefix: true,
+        usePrefix: false,
         description: "chat bot sim sim ai system",
         category: "fun",
         cooldown: 1,
