@@ -1,6 +1,6 @@
 const { config } = global.GoatBot;
 const { writeFileSync } = require("fs-extra");
-
+ 
 module.exports = {
 	config: {
         name: "admin",
@@ -12,7 +12,8 @@ module.exports = {
         usePrefix: true,
         description: {
         		vi: "Thêm, xóa, sửa quyền admin",
-        		en: "Add, remove, edit admin role"
+        		en: "Add, remove, edit admin role",
+        		bn: "অ্যাডমিনের অনুমতি যোগ, অপসারণ ও সম্পাদনা করুন"
         	},
         category: "box chat",
         guide: {
@@ -21,10 +22,13 @@ module.exports = {
         			+ '\n	  {pn} [list | -l]: Liệt kê danh sách admin',
         		en: '   {pn} [add | -a] <uid | @tag>: Add admin role for user'
         			+ '\n	  {pn} [remove | -r] <uid | @tag>: Remove admin role of user'
-        			+ '\n	  {pn} [list | -l]: List all admins'
+        			+ '\n	  {pn} [list | -l]: List all admins',
+        		bn: '   {pn} [add | -a] <uid | @tag>: ব্যবহারকারীকে অ্যাডমিনের অনুমতি দিন'
+        			+ '\n	  {pn} [remove | -r] <uid | @tag>: ব্যবহারকারীর অ্যাডমিনের অনুমতি সরিয়ে দিন'
+        			+ '\n	  {pn} [list | -l]: সকল অ্যাডমিনের তালিকা দেখুন'
         	},
     },
-
+ 
 	langs: {
 		vi: {
 			added: "✅ | Đã thêm quyền admin cho %1 người dùng:\n%2",
@@ -43,9 +47,18 @@ module.exports = {
 			notAdmin: "⚠️ | %1 users don't have admin role:\n%2",
 			missingIdRemove: "⚠️ | Please enter ID or tag user to remove admin role",
 			listAdmin: "👑 | List of admins:\n%1"
+		},
+		bn: {
+			added: "✅ | %1 জন ব্যবহারকারীকে অ্যাডমিনের অনুমতি দেওয়া হয়েছে:\n%2",
+			alreadyAdmin: "\n⚠️ | %1 জন ব্যবহারকারীর ইতোমধ্যেই অ্যাডমিনের অনুমতি রয়েছে:\n%2",
+			missingIdAdd: "⚠️ | যাকে অ্যাডমিনের অনুমতি দিতে চান, অনুগ্রহ করে তার আইডি অথবা ট্যাগ দিন",
+			removed: "✅ | %1 জন ব্যবহারকারীর অ্যাডমিনের অনুমতি সরিয়ে দেওয়া হয়েছে:\n%2",
+			notAdmin: "⚠️ | %1 জন ব্যবহারকারীর অ্যাডমিনের অনুমতি নেই:\n%2",
+			missingIdRemove: "⚠️ | যার অ্যাডমিনের অনুমতি সরিয়ে দিতে চান, অনুগ্রহ করে তার আইডি অথবা ট্যাগ দিন",
+			listAdmin: "👑 | অ্যাডমিনদের তালিকা:\n%1"
 		}
 	},
-
+ 
 	onStart: async function ({ message, args, usersData, event, getLang }) {
 		switch (args[0]) {
 			case "add":
@@ -66,7 +79,7 @@ module.exports = {
 						else
 							notAdminIds.push(uid);
 					}
-
+ 
 					config.adminBot.push(...notAdminIds);
 					const getNames = await Promise.all(uids.map(uid => usersData.getName(uid).then(name => ({ uid, name }))));
 					writeFileSync(global.client.dirConfig, JSON.stringify(config, null, 2));
