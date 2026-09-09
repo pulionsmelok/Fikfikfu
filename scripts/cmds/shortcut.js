@@ -158,7 +158,7 @@ module.exports = {
 						return message.reply(getLang('shortcutExists', key), async (err, info) => {
 							if (err)
 								return;
-							global.GoatBot.onReaction.set(info.messageID, {
+							global.GoatBot.onReply.set(info.messageID, {
 								commandName,
 								messageID: info.messageID,
 								author: senderID,
@@ -258,7 +258,7 @@ module.exports = {
 				message.reply(getLang('confirmRemoveAll'), (err, info) => {
 					if (err)
 						return;
-					global.GoatBot.onReaction.set(info.messageID, {
+					global.GoatBot.onReply.set(info.messageID, {
 						commandName,
 						messageID: info.messageID,
 						author: senderID,
@@ -273,31 +273,31 @@ module.exports = {
 		}
 	},
 
-	onReaction: async function ({ event, message, threadsData, getLang, Reaction }) {
-		const { author } = Reaction;
+	onReply: async function ({ event, message, threadsData, getLang, Reply }) {
+		const { author } = Reply;
 		const { threadID, userID } = event;
-		if (author != userID)
+		if (author != event.senderID)
 			return;
-		if (Reaction.type == 'removeAll') {
+		if (Reply.type == 'removeAll') {
 			await threadsData.set(threadID, [], "data.shortcut");
 			return message.reply(getLang('removedAll'));
 		}
-		else if (Reaction.type == 'replaceContent') {
+		else if (Reply.type == 'replaceContent') {
 			const shortCutData = await threadsData.get(threadID, 'data.shortcut', []);
-			const index = shortCutData.findIndex(x => x.key === Reaction.newShortcut.key);
+			const index = shortCutData.findIndex(x => x.key === Reply.newShortcut.key);
 			if (index == -1)
-				shortCutData.push(Reaction.newShortcut);
+				shortCutData.push(Reply.newShortcut);
 			else
-				shortCutData[index] = Reaction.newShortcut;
+				shortCutData[index] = Reply.newShortcut;
 			await threadsData.set(threadID, shortCutData, 'data.shortcut');
 			return message.reply(getLang(
 				'added',
-				Reaction.newShortcut.key,
-				Reaction.newShortcut.content
+				Reply.newShortcut.key,
+				Reply.newShortcut.content
 			)
-				+ (Reaction.newShortcut.attachments.length > 0 ? `\n${getLang(
+				+ (Reply.newShortcut.attachments.length > 0 ? `\n${getLang(
 					'addedAttachment',
-					Reaction.newShortcut.attachments.length
+					Reply.newShortcut.attachments.length
 				)} ` : '')
 			);
 		}

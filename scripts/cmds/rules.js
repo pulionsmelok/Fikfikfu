@@ -194,10 +194,11 @@ module.exports = {
 			if (role < 1)
 				return message.reply(getLang("noPermissionRemove"));
 			message.reply(getLang("confirmRemove"), (err, info) => {
-				global.GoatBot.onReaction.set(info.messageID, {
+				global.GoatBot.onReply.set(info.messageID, {
 					commandName: "rules",
 					messageID: info.messageID,
-					author: senderID
+					author: senderID,
+					type: "remove"
 				});
 			});
 		}
@@ -218,7 +219,11 @@ module.exports = {
 	},
 
 	onReply: async function ({ message, event, getLang, Reply }) {
-		const { author, rulesOfThread } = Reply;
+		const { author, rulesOfThread, type } = Reply;
+		if (type === "remove") {
+			await threadsData.set(event.threadID, [], "data.rules");
+			return message.reply(getLang("successRemove"));
+		}
 		if (author != event.senderID)
 			return;
 		const num = parseInt(event.body || "");
@@ -229,13 +234,4 @@ module.exports = {
 			return message.reply(`${getLang("rulesNotExist", num)}, ${totalRules == 0 ? getLang("noRules") : getLang("numberRules", totalRules)}`);
 		message.reply(`${num}. ${rulesOfThread[num - 1]}`, () => message.unsend(Reply.messageID));
 	},
-
-	onReaction: async ({ threadsData, message, Reaction, event, getLang }) => {
-		const { author } = Reaction;
-		const { threadID, userID } = event;
-		if (author != userID)
-			return;
-		await threadsData.set(threadID, [], "data.rules");
-		message.reply(getLang("successRemove"));
-	}
 };

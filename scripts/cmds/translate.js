@@ -71,23 +71,8 @@ module.exports = {
 	},
 
 	onStart: async function ({ message, event, args, threadsData, getLang, commandName }) {
-		if (["-r", "-react", "-reaction"].includes(args[0])) {
-			if (args[1] == "set") {
-				return message.reply(getLang("inputEmoji"), (err, info) =>
-					global.GoatBot.onReaction.set(info.messageID, {
-						type: "setEmoji",
-						commandName,
-						messageID: info.messageID,
-						authorID: event.senderID
-					})
-				);
-			}
-			const isEnable = args[1] == "on" ? true : args[1] == "off" ? false : null;
-			if (isEnable == null)
-				return message.reply(getLang("invalidArgument"));
-			await threadsData.set(event.threadID, isEnable, "data.translate.autoTranslateWhenReaction");
-			return message.reply(isEnable ? getLang("turnOnTransWhenReaction") : getLang("turnOffTransWhenReaction"));
-		}
+		if (["-r", "-react", "-reaction"].includes(args[0]))
+			return message.reply("❌ Reaction-based translate has been removed. Reply to a message and use the translate command instead.");
 		const { body = "" } = event;
 		let content;
 		let langCodeTrans;
@@ -125,39 +110,6 @@ module.exports = {
 		translateAndSendMessage(content, langCodeTrans, message, getLang);
 	},
 
-	onChat: async ({ event, threadsData }) => {
-		if (!await threadsData.get(event.threadID, "data.translate.autoTranslateWhenReaction"))
-			return;
-		global.GoatBot.onReaction.set(event.messageID, {
-			commandName: 'translate',
-			messageID: event.messageID,
-			body: event.body,
-			type: "translate"
-		});
-	},
-
-	onReaction: async ({ message, Reaction, event, threadsData, getLang }) => {
-		switch (Reaction.type) {
-			case "setEmoji": {
-				if (event.userID != Reaction.authorID)
-					return;
-				const emoji = event.reaction;
-				if (!emoji)
-					return;
-				await threadsData.set(event.threadID, emoji, "data.translate.emojiTranslate");
-				return message.reply(getLang("emojiSet", emoji), () => message.unsend(Reaction.messageID));
-			}
-			case "translate": {
-				const emojiTrans = await threadsData.get(event.threadID, "data.translate.emojiTranslate") || "🌐";
-				if (event.reaction == emojiTrans) {
-					const langCodeTrans = await threadsData.get(event.threadID, "data.lang") || global.GoatBot.config.language;
-					const content = Reaction.body;
-					Reaction.delete();
-					translateAndSendMessage(content, langCodeTrans, message, getLang);
-				}
-			}
-		}
-	}
 };
 
 async function translate(text, langCode) {

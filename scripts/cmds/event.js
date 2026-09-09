@@ -209,7 +209,7 @@ module.exports = {
 				return message.reply(getLang("invalidUrlOrCode"));
 			if (fs.existsSync(path.join(__dirname, "..", "events", fileName)))
 				return message.reply(getLang("alreadExist"), (err, info) => {
-					global.GoatBot.onReaction.set(info.messageID, {
+					global.GoatBot.onReply.set(info.messageID, {
 						commandName,
 						messageID: info.messageID,
 						type: "install",
@@ -231,9 +231,9 @@ module.exports = {
 			message.SyntaxError();
 	},
 
-	onReaction: async function ({ Reaction, message, event, api, threadModel, userModel, dashBoardModel, globalModel, threadsData, usersData, dashBoardData, globalData, getLang }) {
-		const { author, messageID, data: { fileName, rawCode } } = Reaction;
-		if (event.userID != author)
+	onReply: async function ({ Reply, message, event, api, threadModel, userModel, dashBoardModel, globalModel, threadsData, usersData, dashBoardData, globalData, getLang }) {
+		const { author, messageID, data: { fileName, rawCode } } = Reply;
+		if (event.senderID != author)
 			return;
 		const { configCommands } = global.GoatBot;
 		const { log, loadScripts } = global.utils;

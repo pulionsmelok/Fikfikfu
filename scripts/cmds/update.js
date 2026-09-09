@@ -121,7 +121,7 @@ module.exports = {
 				if (err)
 					return console.error(err);
 
-				global.GoatBot.onReaction.set(info.messageID, {
+				global.GoatBot.onReply.set(info.messageID, {
 					messageID: info.messageID,
 					threadID: info.threadID,
 					authorID: event.senderID,
@@ -130,9 +130,9 @@ module.exports = {
 			});
 	},
 
-	onReaction: async function ({ message, getLang, Reaction, event, commandName }) {
+	onReply: async function ({ message, getLang, Reply, event, commandName }) {
 		const { userID } = event;
-		if (userID != Reaction.authorID)
+		if (event.senderID != Reply.authorID)
 			return;
 
 		const { data: lastCommit } = await axios.get('https://api.github.com/repos/ntkhang03/Goat-Bot-V2/commits/main');

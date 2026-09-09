@@ -1971,7 +1971,6 @@ function loadScripts(
 			"onStart",
 			"onChat",
 			"onReply",
-			"onReaction",
 			"onEvent",
 			"onAnyEvent",
 			"onFirstChat",

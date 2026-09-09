@@ -94,13 +94,13 @@ module.exports = {
 
 		return message.reply(args[1] === "-g" ? getLang("confirmGlobal") : getLang("confirmThisThread"), (err, info) => {
 			formSet.messageID = info.messageID;
-			global.GoatBot.onReaction.set(info.messageID, formSet);
+			global.GoatBot.onReply.set(info.messageID, formSet);
 		});
 	},
 
-	onReaction: async function ({ message, threadsData, event, Reaction, getLang }) {
-		const { author, newPrefix, setGlobal } = Reaction;
-		if (event.userID !== author)
+	onReply: async function ({ message, threadsData, event, Reply, getLang }) {
+		const { author, newPrefix, setGlobal } = Reply;
+		if (event.senderID !== author)
 			return;
 		if (setGlobal) {
 			global.GoatBot.config.prefix = newPrefix;
