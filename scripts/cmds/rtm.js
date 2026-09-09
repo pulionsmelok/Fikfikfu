@@ -1,96 +1,92 @@
-const { execSync } = require('child_process');
+const os = require('os');
+const { bold } = require("fontstyles");
 
 module.exports = {
   config: {
-        name: 'rtm',
-        aliases: [],
-        version: '2.3.0',
-        author: "SK-SIDDIK-KHAN",
-        countDown: 15,
-        role: 0,
-        usePrefix: true,
-        description: { en: "Command description" },
-        category: 'system',
-        guide: '{pn}: Show bot system info',
-        shortDescription: 'Display bot uptime and system stats with media ban check',
-        longDescription: 'Display bot uptime and system stats with media ban check',
+    name: 'rtm',
+    aliases: [],
+    version: '1.6',
+    author: 'SK-SIDDIK-KHAN', 
+    countDown: 5,
+    role: 0,
+    usePrefix: true,
+    shortDescription: 'Display bot uptime',
+    longDescription: {
+      id: 'Display bot uptime and system stats with media ban check',
+      en: 'Display bot uptime and system stats with media ban check'
     },
+    category: 'system',
+    guide: {
+      id: '{pn}: Display bot uptime and system stats',
+      en: '{pn}: Display bot uptime and system stats'
+    }
+  },
+  onStart: async function ({ message, event, usersData, threadsData, api }) {
 
-  onStart: async function ({ message, event, usersData, threadsData, api, threadID}) {
+    if (this.config.author !== 'SK-SIDDIK-KHAN') {
+      return message.reply("⚠ Unauthorized author change detected. Command execution stopped.");
+    }
+
     const startTime = Date.now();
-    const users = await usersData.getAll();
-    const groups = await threadsData.getAll();
-    const uptime = process.uptime();
-
+    
     try {
-      const d = Math.floor(uptime / (3600 * 24));
-      const h = Math.floor((uptime % (3600 * 24)) / 3600);
-      const m = Math.floor((uptime % 3600) / 60);
-      const s = Math.floor(uptime % 60);
+      const users = await usersData.getAll();
+      const groups = await threadsData.getAll();
+      const uptime = process.uptime();
 
-      const totalMem = (parseInt(execSync("grep MemTotal /proc/meminfo | awk '{print $2}'")) / (1024 * 1024)).toFixed(2);
-      const freeMem = (parseInt(execSync("grep MemAvailable /proc/meminfo | awk '{print $2}'")) / (1024 * 1024)).toFixed(2);
-      const cpuModel = execSync("grep 'model name' /proc/cpuinfo | uniq | cut -d: -f2").toString().trim();
-      const cpuCores = parseInt(execSync("nproc"));
-      const cpuUsage = execSync("top -bn1 | grep '%Cpu' | awk '{print $2 + $4}'").toString().trim();
-      const diskUsage = execSync("df -h / | awk 'NR==2{print $5}'").toString().trim();
-      const diskTotal = execSync("df -h / | awk 'NR==2{print $2}'").toString().trim();
-      const diskFree = execSync("df -h / | awk 'NR==2{print $4}'").toString().trim();
-      const osVersion = execSync("grep 'PRETTY_NAME' /etc/os-release | cut -d= -f2").toString().replace(/"/g, '');
+      const bangladeshTime = new Date().toLocaleString('en-US', { 
+        timeZone: 'Asia/Dhaka', weekday: 'long', year: 'numeric', month: 'long', 
+        day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true 
+      });
+
+      const days = Math.floor(uptime / (3600 * 24));
+      const hours = Math.floor((uptime % (3600 * 24)) / 3600);
+      const minutes = Math.floor((uptime % 3600) / 60);
+      const seconds = Math.floor(uptime % 60);
+      const totalMemory = os.totalmem();
+      const freeMemory = os.freemem();
+      const usedMemory = totalMemory - freeMemory;
+      const memPercentage = (usedMemory / totalMemory * 100).toFixed(1);
+      const barLength = 10;
+      const filledBar = Math.round((memPercentage / 100) * barLength);
+      const ramBar = "█".repeat(filledBar) + "▒".repeat(barLength - filledBar);
+      const usedMemoryGB = (usedMemory / 1024 / 1024 / 1024).toFixed(2);
+      const totalMemoryGB = (totalMemory / 1024 / 1024 / 1024).toFixed(2);
+      const cpuUsage = os.loadavg();
+      const cpuModel = os.cpus()[0].model.split('@')[0].trim();
       const nodeVersion = process.version;
-      const endTime = Date.now();
-      const ping = endTime - startTime;
-      const totalMsg = users.reduce((sum, u) => sum + (u.messageCount || 0), 0);
+      const botPing = Date.now() - startTime;   
       const mediaBan = await threadsData.get(event.threadID, 'mediaBan') || false;
-
-      const output =
-`╭━━━〔 🤖 𝐁𝐎𝐓 𝐈𝐍𝐅𝐎 〕━━━╮
-┃👥 𝗨𝘀𝗲𝗿𝘀        : ${users.length}
-┃💬 𝗚𝗿𝗼𝗼𝘂𝗽𝘀      : ${groups.length}
-┃🧾 𝗖𝗼𝗺𝗺𝗮𝗻𝗱𝘀 : ${global.GoatBot.commands?.size || 'N/A'}
-┃📨 𝗧𝗼𝘁𝗮𝗹 𝗠𝘀𝗴𝘀  : ${totalMsg}
-┃⏱️ 𝗨𝗽𝘁𝗶𝗺𝗲       : ${d}d ${h}h ${m}m ${s}s
-┃📶 𝗣𝗶𝗻𝗴          : ${ping}ms
-╰━━━━━━━━━━━━━━━━━━╯
-
-╭━〔 🖥 𝐒𝐄𝐑𝐕𝐄𝐑 𝐒𝐓𝐀𝐓𝐒 〕━╮
-┃🧠 𝗥𝗔𝗠 : ${freeMem}GB free / ${totalMem}GB
-┃💽 𝗗𝗶𝘀𝗸 : ${diskUsage} used (T: ${diskTotal}, F: ${diskFree})
-┃⚙️ 𝗖𝗽𝗨     : ${cpuModel}
-┃🔢 𝗖𝗼𝗿𝗲𝘀   : ${cpuCores}
-┃🔥 𝗖𝗽𝗨 𝗨𝘀𝗮𝗴𝗲 : ${cpuUsage}%
-╰━━━━━━━━━━━━━━━━━━╯
-
-╭━〔 ⚙️ 𝐒𝐘𝐒𝐓𝐄𝐌 〕━━━╮
-┃🖥 𝗢𝗦 : ${osVersion}
-┃📦 𝗡𝗼𝗱𝗲.𝗷𝘀  : ${nodeVersion}
-┃🔒 𝗠𝗲𝗱𝗶𝗮 𝗕𝗮𝗻𝗻𝗲𝗱  : ${mediaBan ? '🚫 Yes' : '✅ No'}
-╰━━━━━━━━━━━━━━━━━━╯`;
-
-      const frames = [
-        '🔄 𝗜𝗻𝗶𝘁𝗶𝗮𝗹𝗶𝘇𝗶𝗻𝗴...\n[░░░░░░░░░░]',
-        '🔄 𝗖𝗵𝗲𝗰𝗸𝗶𝗻𝗴 𝗦𝘁𝗮𝘁𝘀...\n[███░░░░░░░]',
-        '🔧 𝗟𝗼𝗮𝗱𝗶𝗻𝗴 𝗜𝗻𝗳𝗼...\n[██████░░░░]',
-        '✅ 𝗗𝗼𝗻𝗲!\n[██████████]'
+      const mediaStatus = mediaBan ? '🚫 Restricted' : '✅ Active';
+      const editSegments = [
+        `╭─❒ ${bold("SYSTEM UPTIME")}\n│ 🕒 ${days}d ${hours}h ${minutes}m ${seconds}s\n╰───────────────❒`,
+        `╭─❒ ${bold("RESOURCE USAGE")}\n│ 📟 RAM: [${ramBar}] ${memPercentage}%\n│ 📥 ${usedMemoryGB}GB / ${totalMemoryGB}GB\n│ 🛡️ CPU: ${cpuModel}\n│ ⚡ Load: ${cpuUsage[0].toFixed(2)}%\n╰───────────────❒`,
+        `╭─❒ ${bold("BOT STATUS")}\n│ 🚀 Ping: ${botPing}ms\n│ 📦 Node: ${nodeVersion}\n│ 👥 Users: ${users.length}\n│ 🏘️ Groups: ${groups.length}\n╰───────────────❒`,
+        `╭─❒ ${bold("SECURITY & TIME")}\n│ 🖼️ Media: ${mediaStatus}\n│ 📅 ${bangladeshTime}\n╰───────────────❒`,
+        `✨ ${bold("Status:")} All systems are operational.\nCreated by: ${this.config.author}`
       ];
 
-      const sent = await message.reply("⚙️ Gathering system info...");
+      const loadingFrames = [
+        '『 ▒▒▒▒▒▒▒▒▒▒ 』 0%',
+        '『 ██▒▒▒▒▒▒▒▒ 』 25%',
+        '『 █████▒▒▒▒▒ 』 50%',
+        '『 ███████▒▒▒ 』 75%',
+        '『 ██████████ 』 100%'
+      ];
 
-      let step = 0;
-      const animate = async () => {
-        if (step < frames.length) {
-          await api.editMessage(frames[step], sent.messageID, event.threadID);
-          step++;
-          return setTimeout(animate, 600);
-        }
-        await api.editMessage(output, sent.messageID, event.threadID);
-      };
+      let sentMessage = await message.reply("🔄 Fetching System Data...");
 
-      await animate();
+      const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+      for (let i = 0; i < editSegments.length; i++) {
+        await sleep(700);
+        const currentContent = `⚙️ ${bold("SYSTEM DASHBOARD")}\n${loadingFrames[i]}\n\n${editSegments.slice(0, i + 1).join('\n')}`;
+        await api.editMessage(currentContent, sentMessage.messageID || sentMessage.message_id);
+      }
 
     } catch (err) {
       console.error(err);
-      return message.reply("❌ Error occurred:\n" + err.message);
+      return message.reply("❌ Error: System data fetch failed.");
     }
   }
 };
