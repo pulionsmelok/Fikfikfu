@@ -21,6 +21,18 @@ function safeFileName(fileName) {
 	return fileName;
 }
 
+function normalizeCommandFileName(fileName) {
+	let raw = path.basename(String(fileName || "").trim());
+	if (!raw) return null;
+	if (!/\.js$/i.test(raw)) raw += ".js";
+	return safeFileName(raw);
+}
+
+function commandBaseName(fileName) {
+	const normalized = normalizeCommandFileName(fileName);
+	return normalized ? normalized.slice(0, -3) : null;
+}
+
 function getTelegramDocument(event) {
 	const msg = event?.message || event?.raw || event || {};
 
@@ -74,6 +86,7 @@ function commandButtons(action, fileName, userID) {
 		}
 	};
 }
+
 
 function isURL(str) {
 	try {
@@ -188,24 +201,23 @@ module.exports = {
 
 	onStart: async ({ args, message, api, threadModel, userModel, dashBoardModel, globalModel, threadsData, usersData, dashBoardData, globalData, event, commandName, getLang, userID}) => {
 		const { unloadScripts, loadScripts } = global.utils;
-
 		
 		const telegramDocument = getTelegramDocument(event);
-		if (telegramDocument && String(event.body || "").trim().toLowerCase().match(/^(?:\/)?cmd(?:\s+(?:install|add))?(?:\s+.*)?$/)) {
+		if (telegramDocument && String(commandName || "").toLowerCase() === "cmd" && (!args[0] || /^(?:install|add)$/i.test(String(args[0])))) {
 			try {
 				const { fileName, rawCode } = await downloadTelegramDocument(event, api);
 				if (!rawCode.trim()) throw new Error("JavaScript file is empty");
 				if (fs.existsSync(commandPath(fileName))) {
 					global.cmdInstallPending = global.cmdInstallPending || new Map();
 					global.cmdInstallPending.set(`${event.senderID}:${fileName}`, { userID: String(event.senderID), fileName, rawCode, createdAt: Date.now() });
-					return message.reply({ body: `⚠️ ${fileName} already exists.\n\nChoose an action:`, reply_markup: commandButtons("install", fileName, String(event.senderID)).reply_markup });
+					return message.reply({ body: getLang("alreadExist"), reply_markup: commandButtons("install", fileName, String(event.senderID)).reply_markup });
 				}
 				const infoLoad = loadScripts("cmds", fileName, log, configCommands, api, threadModel, userModel, dashBoardModel, globalModel, threadsData, usersData, dashBoardData, globalData, getLang, rawCode);
 				return infoLoad.status == "success"
-					? message.reply(`✅ Installed & loaded \`${infoLoad.name}.js\` from Telegram document.`)
-					: message.reply(`❌ Install failed: ${infoLoad.error.name}: ${infoLoad.error.message}`);
+					? message.reply(getLang("installed", infoLoad.name, path.join(__dirname, `${infoLoad.name}.js`).replace(process.cwd(), "")))
+					: message.reply(getLang("installedError", fileName, infoLoad.error.name, infoLoad.error.message));
 			} catch (err) {
-				return message.reply(`❌ Document install failed: ${err.message}`);
+				return message.reply(getLang("installedError", "command.js", err.name || "Error", err.message || String(err)));
 			}
 		}
 		if (
@@ -214,7 +226,10 @@ module.exports = {
 		) {
 			if (!args[1])
 				return message.reply(getLang("missingFileName"));
-			const infoLoad = loadScripts("cmds", args[1], log, configCommands, api, threadModel, userModel, dashBoardModel, globalModel, threadsData, usersData, dashBoardData, globalData, getLang);
+			const loadFile = commandBaseName(args[1]);
+			if (!loadFile)
+				return message.reply(getLang("invalidFileName"));
+			const infoLoad = loadScripts("cmds", loadFile, log, configCommands, api, threadModel, userModel, dashBoardModel, globalModel, threadsData, usersData, dashBoardData, globalData, getLang);
 			if (infoLoad.status == "success")
 				message.reply(getLang("loaded", infoLoad.name));
 			else {
@@ -238,7 +253,7 @@ module.exports = {
 						!configCommands.commandUnload?.includes(file)
 					)
 					.map(item => item = item.split(".")[0]) :
-				args.slice(1);
+				args.slice(1).map(commandBaseName).filter(Boolean).map(item => item.slice(0, -3));
 			const arraySucces = [];
 			const arrayFail = [];
 
@@ -260,32 +275,50 @@ module.exports = {
 
 			message.reply(msg);
 		}
-		else if (args[0] == "unload") {
+		else if ((args[0] || "").toLowerCase() == "unload") {
 			if (!args[1])
 				return message.reply(getLang("missingCommandNameUnload"));
-			const infoUnload = unloadScripts("cmds", args[1], configCommands, getLang);
-			infoUnload.status == "success" ?
-				message.reply(getLang("unloaded", infoUnload.name)) :
-				message.reply(getLang("unloadedError", infoUnload.name, infoUnload.error.name, infoUnload.error.message));
-		}
-		else if (args[0] == "rename") {
-			const oldFile = safeFileName(args[1]);
-			const newFile = safeFileName(args[2]);
-			if (!oldFile || !newFile) return message.reply("⚠️ Usage: /cmd rename old.js new.js");
-			if (!fs.existsSync(commandPath(oldFile))) return message.reply(`❌ ${oldFile} not found.`);
-			if (fs.existsSync(commandPath(newFile))) return message.reply(`⚠️ ${newFile} already exists.`);
+			const unloadFile = commandBaseName(args[1]);
+			if (!unloadFile) return message.reply(getLang("invalidFileName"));
 			try {
-				try { unloadScripts("cmds", oldFile, configCommands, getLang); } catch (_) {}
-				fs.renameSync(commandPath(oldFile), commandPath(newFile));
-				const db = global.db || {};
-				const infoLoad = loadScripts("cmds", newFile, log, configCommands, api, db.threadModel, db.userModel, db.dashBoardModel, db.globalModel, db.threadsData, db.usersData, db.dashBoardData, db.globalData, getLang);
-				if (infoLoad.status !== "success") throw infoLoad.error;
-				message.reply(`✅ Renamed ${oldFile} → ${newFile} and loaded.`);
+				const infoUnload = unloadScripts("cmds", unloadFile.slice(0, -3), configCommands, getLang);
+				return message.reply(getLang("unloaded", infoUnload.name));
 			} catch (err) {
-				message.reply(`❌ Rename failed: ${err.name || "Error"}: ${err.message || err}`);
+				return message.reply(getLang("unloadedError", unloadFile, err.name || "Error", err.message || String(err)));
 			}
 		}
-		else if (args[0] == "install") {
+		else if ((args[0] || "").toLowerCase() == "rename") {
+			const oldFile = normalizeCommandFileName(args[1]);
+			const newFile = normalizeCommandFileName(args[2]);
+			if (!oldFile || !newFile) return message.reply("⚠️ | Usage: cmd rename old.js new.js");
+			if (!fs.existsSync(commandPath(oldFile))) return message.reply(getLang("missingFile", oldFile));
+			if (fs.existsSync(commandPath(newFile))) return message.reply(`⚠️ | Command file "${newFile}" already exists`);
+			try {
+				try { unloadScripts("cmds", oldFile.slice(0, -3), configCommands, getLang); } catch (_) {}
+				fs.renameSync(commandPath(oldFile), commandPath(newFile));
+				const db = global.db || {};
+				const infoLoad = loadScripts("cmds", newFile.slice(0, -3), log, configCommands, api, db.threadModel, db.userModel, db.dashBoardModel, db.globalModel, db.threadsData, db.usersData, db.dashBoardData, db.globalData, getLang);
+				if (infoLoad.status !== "success") throw infoLoad.error;
+				message.reply(`✅ | Renamed command "${oldFile}" to "${newFile}" successfully`);
+			} catch (err) {
+				message.reply(`❌ | Failed to rename command "${oldFile}" with error\n${err.name || "Error"}: ${err.message || err}`);
+			}
+		}
+		else if (["del", "delete"].includes((args[0] || "").toLowerCase())) {
+			if (!args[1]) return message.reply("⚠️ | Please enter the command file name you want to delete");
+			const fileName = normalizeCommandFileName(args[1]);
+			if (!fileName) return message.reply(getLang("invalidFileName"));
+			const filePath = commandPath(fileName);
+			if (!fs.existsSync(filePath)) return message.reply(getLang("missingFile", fileName));
+			try {
+				try { unloadScripts("cmds", fileName.slice(0, -3), configCommands, getLang); } catch (_) {}
+				fs.unlinkSync(filePath);
+				return message.reply(`🗑️ | Deleted command file "${fileName}" successfully`);
+			} catch (err) {
+				return message.reply(`❌ | Failed to delete command "${fileName}" with error\n${err.name || "Error"}: ${err.message || err}`);
+			}
+		}
+		else if (["install", "add"].includes((args[0] || "").toLowerCase())) {
 			let url = args[1];
 			let fileName = args[2];
 			let rawCode;
@@ -361,15 +394,15 @@ module.exports = {
 					createdAt: Date.now()
 				});
 				return message.reply({
-					body: `⚠️ ${fileName} already exists.\n\nChoose an action:`,
+				body: getLang("alreadExist"),
 					reply_markup: commandButtons("install", fileName, String(event.senderID)).reply_markup
 				});
 			}
 
 			const infoLoad = loadScripts("cmds", fileName, log, configCommands, api, threadModel, userModel, dashBoardModel, globalModel, threadsData, usersData, dashBoardData, globalData, getLang, rawCode);
 			infoLoad.status == "success" ?
-				message.reply(getLang("installed", infoLoad.name, path.join(__dirname, fileName).replace(process.cwd(), ""))) :
-				message.reply(getLang("installedError", infoLoad.name, infoLoad.error.name, infoLoad.error.message));
+				message.reply(getLang("installed", infoLoad.name, path.join(__dirname, `${infoLoad.name}.js`).replace(process.cwd(), ""))) :
+				message.reply(getLang("installedError", fileName, infoLoad.error.name, infoLoad.error.message));
 		}
 		else
 			message.SyntaxError();
@@ -396,7 +429,7 @@ module.exports = {
 		if (action === "cancel") {
 			global.cmdInstallPending.delete(key);
 			await ctx.answerCbQuery("Cancelled");
-			await ctx.editMessageText("❌ Install cancelled.");
+			await ctx.editMessageText("❌ | Install cancelled.");
 			return;
 		}
 
@@ -411,10 +444,10 @@ module.exports = {
 				if (infoLoad.status !== "success") throw infoLoad.error;
 				global.cmdInstallPending.delete(key);
 				await ctx.answerCbQuery("Replaced successfully");
-				await ctx.editMessageText(`✅ Replaced and loaded \`${fileName}\`.`);
+				await ctx.editMessageText(getLang("installed", infoLoad.name, path.join(__dirname, `${infoLoad.name}.js`).replace(process.cwd(), "")));
 			} catch (err) {
 				await ctx.answerCbQuery("❌ Replace failed");
-				await ctx.editMessageText(`❌ Replace failed: ${err.name || "Error"}: ${err.message || err}`);
+				await ctx.editMessageText(getLang("installedError", fileName, err.name || "Error", err.message || String(err)));
 			}
 			return;
 		}
@@ -423,7 +456,7 @@ module.exports = {
 			global.cmdRenamePending = global.cmdRenamePending || new Map();
 			global.cmdRenamePending.set(String(userID), { ...pending, oldFileName: fileName, createdAt: Date.now() });
 			await ctx.answerCbQuery("Send the new filename");
-			await ctx.editMessageText(`✏️ Send the new filename using:\n\n/cmd rename ${fileName} newname.js`);
+			await ctx.editMessageText(`✏️ Send the new filename using your current prefix:\n\n<your-prefix>cmd rename ${fileName} newname.js`);
 			return;
 		}
 	},
@@ -435,20 +468,16 @@ module.exports = {
 			return;
 		const infoLoad = loadScripts("cmds", fileName, log, configCommands, api, threadModel, userModel, dashBoardModel, globalModel, threadsData, usersData, dashBoardData, globalData, getLang, rawCode);
 		infoLoad.status == "success" ?
-			message.reply(getLang("installed", infoLoad.name, path.join(__dirname, fileName).replace(process.cwd(), ""))) :
-			message.reply(getLang("installedError", infoLoad.name, infoLoad.error.name, infoLoad.error.message));
+			message.reply(getLang("installed", infoLoad.name, path.join(__dirname, `${infoLoad.name}.js`).replace(process.cwd(), ""))) :
+			message.reply(getLang("installedError", fileName, infoLoad.error.name, infoLoad.error.message));
 	}
 };
-
 
 const packageAlready = [];
 const spinner = "\\|/-";
 let count = 0;
 
 function loadScripts(folder, fileName, log, configCommands, api, threadModel, userModel, dashBoardModel, globalModel, threadsData, usersData, dashBoardData, globalData, getLang, rawCode) {
-
-
-
 
 	const storageCommandFilesPath = global.GoatBot[folder == "cmds" ? "commandFilesPath" : "eventCommandsFilesPath"];
 
@@ -539,11 +568,7 @@ function loadScripts(folder, fileName, log, configCommands, api, threadModel, us
 		}
 		
 		delete require.cache[require.resolve(pathCommand)];
-		
-
-
-
-		
+				
 		const command = require(pathCommand);
 		command.location = pathCommand;
 		const configCommand = command.config;
@@ -551,12 +576,10 @@ function loadScripts(folder, fileName, log, configCommands, api, threadModel, us
 			throw new Error("config of command must be an object");
 		
 		const scriptName = configCommand.name;
-
 		
 		const indexOnChat = allOnChat.findIndex(item => item == oldCommandName);
 		if (indexOnChat != -1)
 			allOnChat.splice(indexOnChat, 1);
-
 		
 		const indexOnFirstChat = allOnFirstChat.findIndex(item => item.commandName == oldCommandName);
 		let oldOnFirstChat;
@@ -564,17 +587,14 @@ function loadScripts(folder, fileName, log, configCommands, api, threadModel, us
 			oldOnFirstChat = allOnFirstChat[indexOnFirstChat];
 			allOnFirstChat.splice(indexOnFirstChat, 1);
 		}
-
 		
 		const indexOnEvent = allOnEvent.findIndex(item => item == oldCommandName);
 		if (indexOnEvent != -1)
 			allOnEvent.splice(indexOnEvent, 1);
-
-		
+	
 		const indexOnAnyEvent = allOnAnyEvent.findIndex(item => item == oldCommandName);
 		if (indexOnAnyEvent != -1)
 			allOnAnyEvent.splice(indexOnAnyEvent, 1);
-
 		
 		if (command.onLoad)
 			command.onLoad({ api, threadModel, userModel, dashBoardModel, globalModel, threadsData, usersData, dashBoardData, globalData });
@@ -611,8 +631,7 @@ function loadScripts(folder, fileName, log, configCommands, api, threadModel, us
 				GoatBot.aliases.set(alias, scriptName);
 			}
 		}
-		
-		
+				
 		if (envGlobal) {
 			if (typeof envGlobal != "object" || Array.isArray(envGlobal))
 				throw new Error("envGlobal must be an object");
