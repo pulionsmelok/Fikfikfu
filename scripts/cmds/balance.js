@@ -167,18 +167,17 @@ async function getTargetUser({ bot, event, args = [], usersData }) {
   return null;
 }
 
-module.exports = {
-	config: {
-    name: "balance",
-    aliases: ["ball","bal"],
-    version: "10.0",
-    author: "SK-SIDDIK-KHAN",
-    countDown: 5,
-    role: 0,
-    usePrefix: true,
-    description: { en: "Show balance card or transfer money" },
-    category: "economy",
-    guide: { en: "{pn}\n{pn} @user\n{pn} transfer <amount> @user\nYou can also reply to a user's message." }
+module.exports.config = {
+  name: "balance",
+  aliases: ["ball","bal"],
+  version: "10.0-Telegram",
+  author: "SK-SIDDIK-KHAN",
+  countDown: 5,
+  role: 0,
+  usePrefix: true,
+  description: { en: "Show balance card or transfer money" },
+  category: "economy",
+  guide: { en: "{pn}\n{pn} @user\n{pn} transfer <amount> @user\nYou can also reply to a user's message." }
 };
 
 module.exports.onStart = async function ({ bot, event, args, message, usersData }) {
