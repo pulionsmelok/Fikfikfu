@@ -1,4 +1,4 @@
-const { existsSync, writeJsonSync, readJSONSync } = require("fs-extra");
+const { existsSync, writeJsonSync, readJSONSync, mkdirpSync } = require("fs-extra");
 const moment = require("moment-timezone");
 const path = require("path");
 const _ = require("lodash");
@@ -30,7 +30,8 @@ const { creatingGlobalData } = global.client.database;
 
 module.exports = async function (databaseType, globalModel, fakeGraphql) {
 	let GlobalData = [];
-	const pathGlobalData = path.join(__dirname, "..", "data/globalData.json");
+	const pathGlobalData = path.join(process.env.JSON_DATA_DIR || path.join(__dirname, "..", "data"), "globalData.json");
+	mkdirpSync(path.dirname(const));
 
 	switch (databaseType) {
 		case "mongodb":

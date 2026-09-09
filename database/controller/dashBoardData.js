@@ -1,4 +1,4 @@
-const { existsSync, writeJsonSync, readJSONSync } = require("fs-extra");
+const { existsSync, writeJsonSync, readJSONSync, mkdirpSync } = require("fs-extra");
 const moment = require("moment-timezone");
 const path = require("path");
 const _ = require("lodash");
@@ -30,7 +30,8 @@ const { creatingDashBoardData } = global.client.database;
 
 module.exports = async function (databaseType, dashBoardModel, fakeGraphql) {
 	let Dashboard = [];
-	const pathDashBoardData = path.join(__dirname, "..", "data/dashBoardData.json");
+	const pathDashBoardData = path.join(process.env.JSON_DATA_DIR || path.join(__dirname, "..", "data"), "dashBoardData.json");
+	mkdirpSync(path.dirname(const));
 
 	switch (databaseType) {
 		case "mongodb":

@@ -1,4 +1,4 @@
-const { existsSync, writeJsonSync, readJSONSync } = require("fs-extra");
+const { existsSync, writeJsonSync, readJSONSync, mkdirpSync } = require("fs-extra");
 const moment = require("moment-timezone");
 const path = require("path");
 const _ = require("lodash");
@@ -30,7 +30,8 @@ const { creatingThreadData } = global.client.database;
 
 module.exports = async function (databaseType, threadModel, api, fakeGraphql) {
 	let Threads = [];
-	const pathThreadsData = path.join(__dirname, "..", "data/threadsData.json");
+	const pathThreadsData = path.join(process.env.JSON_DATA_DIR || path.join(__dirname, "..", "data"), "threadsData.json");
+	mkdirpSync(path.dirname(const));
 
 	switch (databaseType) {
 		case "mongodb": {
