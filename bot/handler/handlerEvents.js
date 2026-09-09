@@ -112,7 +112,7 @@ function getRoleConfig(utils, command, isGroup, threadData, commandName) {
 	if (isGroup)
 		roleConfig.onStart = threadData.data.setRole?.[commandName] ?? roleConfig.onStart;
 
-	for (const key of ["onChat", "onStart", "onReply"]) {
+	for (const key of ["onChat", "onStart", "onReaction", "onReply"]) {
 		if (roleConfig[key] == undefined)
 			roleConfig[key] = roleConfig.onStart;
 	}
@@ -816,6 +816,65 @@ async function onLegacyHandleEvent() {
 			await runLegacyAlwaysHandler("handleEvent", "handleEvent", args);
 		}
 
+		// ———————————————— ON REACTION ———————————————— //
+async function onReaction() {
+			const { onReaction } = GoatBot;
+			const Reaction = onReaction.get(messageID);
+			if (!Reaction)
+				return;
+			Reaction.delete = () => onReaction.delete(messageID);
+			const commandName = Reaction.commandName;
+			if (!commandName) {
+				message.reply(utils.getText({ lang: langCode, head: "handlerEvents" }, "cannotFindCommandName"));
+				return log.err("onReaction", `Can't find command name to execute this reaction!`, Reaction);
+			}
+			const command = GoatBot.commands.get(commandName);
+			if (!command) {
+				message.reply(utils.getText({ lang: langCode, head: "handlerEvents" }, "cannotFindCommand", commandName));
+				return log.err("onReaction", `Command "${commandName}" not found`, Reaction);
+			}
+
+			
+			const roleConfig = getRoleConfig(utils, command, isGroup, threadData, commandName);
+			const needRole = roleConfig.onReaction;
+			if (needRole > role) {
+				if (!hideNotiMessage.needRoleToUseCmdOnReaction) {
+					if (needRole == 1)
+						return await message.reply(utils.getText({ lang: langCode, head: "handlerEvents" }, "onlyAdminToUseOnReaction", commandName));
+					else if (needRole >= 2)
+						return await message.reply(utils.getText({ lang: langCode, head: "handlerEvents" }, "onlyAdminBot2ToUseOnReaction", commandName));
+				}
+				else {
+					return true;
+				}
+			}
+			
+
+			const time = getTime("DD/MM/YYYY HH:mm:ss");
+			try {
+				if (!command)
+					throw new Error(`Cannot find command with commandName: ${commandName}`);
+				const getText2 = createGetText2(langCode, `${process.cwd()}/languages/cmds/${langCode}.js`, prefix, command);
+				const args = [];
+				createMessageSyntaxError(commandName);
+				if (isBannedOrOnlyAdmin(userData, threadData, senderID, threadID, isGroup, commandName, message, langCode, { silent: securityNoticeSent })) {
+					securityNoticeSent = true;
+					return;
+				}
+				await command.onReaction({
+					...parameters,
+					Reaction,
+					args,
+					commandName,
+					getLang: getText2
+				});
+				log.info("onReaction", `${commandName} | ${userData.name} | ${senderID} | ${threadID} | ${event.reaction}`);
+			}
+			catch (err) {
+				log.err("onReaction", `An error occurred when calling the command onReaction ${commandName}`, err);
+				await message.reply(utils.getText({ lang: langCode, head: "handlerEvents" }, "errorOccurred4", time, commandName, removeHomeDir(err.stack ? err.stack.split("\n").slice(0, 5).join("\n") : JSON.stringify(err, null, 2))));
+			}
+		}
 
 
 		
@@ -925,6 +984,7 @@ async function typ() {
 			onLegacyHandleEvent,
 			onNoPrefix,
 			onStart,
+			onReaction,
 			onReply,
 			onEvent,
 			handlerEvent,

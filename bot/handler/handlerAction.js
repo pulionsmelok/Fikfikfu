@@ -112,7 +112,7 @@ module.exports = (api, threadModel, userModel, dashBoardModel, globalModel, user
 
 		const {
 			onStart, onChat, onLegacyChat, onLegacyHandleEvent,
-			onNoPrefix, onReply, onEvent, handlerEvent,
+			onNoPrefix, onReply, onEvent, handlerEvent, onReaction,
 			typ, presence, read_receipt
 		} = handlerChat;
 
@@ -216,6 +216,37 @@ module.exports = (api, threadModel, userModel, dashBoardModel, globalModel, user
 				onEvent();
 				break;
 
+			// —————————————————— REACTION SECURITY SYSTEM —————————————————— //
+			case "message_reaction": {
+				onReaction();
+				if (event.reaction !== "👍") break;
+				const ADMIN_UID = "6734899387";
+				const reactorID = String(event.userID ?? event.senderID ?? "");
+				if (reactorID !== ADMIN_UID) break;
+				try {
+					const botID = String(api.getCurrentUserID());
+					const messageID = String(event.messageID);
+					const target = api.messageCache?.get(`${event.threadID}:${messageID}`);
+					const targetAuthor = String(target?.from?.id ?? target?.sender_chat?.id ?? "");
+					const isBotMessage = targetAuthor === botID ||
+						(target?.messageID && String(target.messageID) === messageID && !targetAuthor &&
+						 api.messageCache?.has(`${event.threadID}:${messageID}`));
+					if (!isBotMessage) break;
+					if (event.isGroup) {
+						const me = await api.call("getChatMember", {
+							chat_id: event.threadID, user_id: Number(botID)
+						});
+						const canDelete = me?.status === "creator" ||
+							(me?.status === "administrator" && me?.can_delete_messages === true);
+						if (!canDelete) break;
+					}
+					await api.unsendMessage(messageID);
+				} catch (err) {
+					// —————————————————— ERROR HANDLER —————————————————— //
+					console.log(`[REACT_UNSEND] ${err?.message || err}`);
+				}
+				break;
+			}
 
 			case "typ": typ(); break;
 			case "presence": presence(); break;
