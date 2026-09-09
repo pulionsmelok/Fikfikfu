@@ -62,7 +62,6 @@ global.GoatBot = {
 	noPrefix: [],
 	onEvent: [], 
 	onReply: new Map(), 
-	onReaction: new Map(), 
 	onAnyEvent: [], 
 	config, 
 	configCommands, 
