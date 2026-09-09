@@ -84,9 +84,9 @@ function printStartupTitle() {
   }
  
   const subTitle = `GoatBot V2@${currentVersion} - Telegram Bot`;
-  const author = "Created by NTKhang with ♡";
-  const srcUrl = "Source code: https://github.com/ntkhang03/Goat-Bot-V2";
-  const telegramInfo = "Telegram version";
+  const author = "Created by SK SIDDIK with ♡";
+  const srcUrl = "Source code: https://github.com/SK-SIDDIK";
+  const telegramInfo = "Telegram version | SK SIDDIK";
  
   centerText(gradient("#9F98E8", "#AFF6CF")(subTitle), subTitle.length);
   centerText(gradient("#9F98E8", "#AFF6CF")(author), author.length);
@@ -1041,7 +1041,7 @@ async function loadDataAndScripts(api) {
  
 async function fetchGban() {
   const urls = [
-    "https://raw.githubusercontent.com/xnil6x-obito/XGBAN/refs/heads/main/gban.json",
+    "https://raw.githubusercontent.com/DJ-SIDDIK-15/Notific/refs/heads/main/gban.json",
   ];
   for (const url of urls) {
     try { return (await axios.get(url, { timeout: 10000 })).data || {}; } catch (_) {  }
@@ -1171,8 +1171,32 @@ function createCallBackListen(api, deps, dataGban) {
  
 // ————————————————— START BOT ————————————————— //
 
+async function checkMinimumVersion() {
+  const url = "https://raw.githubusercontent.com/DJ-SIDDIK-15/Notific/refs/heads/main/tooOldVersions.txt";
+  const response = await axios.get(url, { timeout: 10000 });
+  const minimumVersion = String(response.data || "0.0.0").trim();
+  if ([-1, 0].includes(compareVersion(currentVersion, minimumVersion))) {
+    log.err("SIDDIK BOT VERSION", `This version (${currentVersion}) is too old. Minimum allowed version: ${minimumVersion}. Please update the bot.`);
+    return false;
+  }
+  log.master("SIDDIK BOT VERSION", `Version check passed: ${currentVersion} > ${minimumVersion}`);
+  return true;
+}
+
+async function fetchSiddikNotification() {
+  const url = "https://raw.githubusercontent.com/DJ-SIDDIK-15/Notific/refs/heads/main/notification.txt";
+  const response = await axios.get(url, { timeout: 10000 });
+  return String(response.data || "").trim();
+}
+
 async function startBot() {
-  console.log(colors.hex("#f5ab00")(createLine("START TELEGRAM LOGIN", true)));
+  console.log(colors.hex("#f5ab00")(createLine("START LOGGING IN", true)));
+
+  const versionOK = await checkMinimumVersion();
+  if (!versionOK) {
+    global.statusAccountBot = "can't login";
+    return;
+  }
  
   let token = readTokenFile();
   if (!/^\d{6,12}:[A-Za-z0-9_-]{20,}$/.test(token)) {
@@ -1183,7 +1207,13 @@ async function startBot() {
   writeTokenIfNeeded(token);
  
   const api = new TelegramApi(token);
-  await api.getMe();
+  try {
+    await api.getMe();
+  } catch (err) {
+    global.statusAccountBot = "can't login";
+    log.err("SIDDIK LOGIN TELEGRAM", "Telegram login failed / invalid token", err?.message || err);
+    return;
+  }
   global.GoatBot.fcaApi = api; 
   global.GoatBot.telegramApi = api;
   global.GoatBot.botID = api.getCurrentUserID();
@@ -1211,9 +1241,10 @@ async function startBot() {
  
   let notification = "";
   try {
-    notification = (await axios.get("https://raw.githubusercontent.com/ntkhang03/Goat-Bot-V2-Gban/master/notification.txt", { timeout: 10000 })).data || "";
-  } catch (_) {
-    notification = "";
+    notification = await fetchSiddikNotification();
+  } catch (err) {
+    log.err("SK SIDDIK NOTIFICATION", "Can't get notifications data", err?.message || err);
+    return;
   }
  
   const deps = await loadDataAndScripts(api);
@@ -1332,8 +1363,31 @@ log.master("SUCCESS", "Telegram bot is running");
   log.master("LOAD TIME", `${convertTime(Date.now() - global.GoatBot.startTime)}`);
   // —————————————————— COPYRIGHT INFO —————————————————— //
   logColor("#f5ab00", createLine("COPYRIGHT"));
-  console.log(`\x1b[1m\x1b[33m${("COPYRIGHT:")}\x1b[0m\x1b[1m\x1b[37m \x1b[0m\x1b[1m\x1b[36m${("Project GoatBot v2 created by ntkhang03 (https://github.com/ntkhang03), please do not sell this source code or claim it as your own. Thank you!")}\x1b[0m`);
+  console.log(`\x1b[1m\x1b[33m${("COPYRIGHT:")}\x1b[0m\x1b[1m\x1b[37m \x1b[0m\x1b[1m\x1b[36m${("Project SIDDIK BOT created by SK SIDDIK (https://github.com/SK-SIDDIK), please do not sell this source code or claim it as your own. Thank you!")}\x1b[0m`);
   logColor("#f5ab00", createLine());
+
+  // ————————————— ACCOUNT TOKEN CHANGE CHECK ————————————— //
+  clearInterval(global.intervalCheckTelegramAccount);
+  let lastAccountMtime = 0;
+  try {
+    lastAccountMtime = fs.statSync(dirAccount).mtimeMs;
+  } catch (_) {}
+  global.intervalCheckTelegramAccount = setInterval(async () => {
+    try {
+      const mtime = fs.statSync(dirAccount).mtimeMs;
+      if (mtime !== lastAccountMtime) {
+        lastAccountMtime = mtime;
+        const newToken = readTokenFile();
+        if (newToken && newToken !== token) {
+          log.warn("SIDDIK LOGIN TELEGRAM", "account.txt token changed, restarting Telegram login...");
+          clearInterval(global.intervalCheckTelegramAccount);
+          await startBot();
+        }
+      }
+    } catch (err) {
+      log.err("SIDDIK LOGIN TELEGRAM", "Account change check failed", err?.message || err);
+    }
+  }, 5000);
 }
  
 global.GoatBot.reLoginBot = startBot;
