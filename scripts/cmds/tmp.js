@@ -103,7 +103,7 @@ if (!fs.existsSync(cacheFolder)) {
 module.exports = {
   config: {
         name: "sk",
-        aliases: [],
+        aliases: ["tmp"],
         version: "1.0",
         author: "SK-SIDDIK-KHAN",
         countDown: 5,
