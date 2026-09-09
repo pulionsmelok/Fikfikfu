@@ -9,9 +9,7 @@ module.exports = {
         usePrefix: true,
         description: "Get information about a user, including their bio and avatar",
         category: "utility",
-        guide: "[user_id]",
-        credits: "S1DD1K",
-        coolDowns: 5,
+        guide: "[user_id]"
     },
 
   onStart: async ({ bot, event, args, message}) => {
