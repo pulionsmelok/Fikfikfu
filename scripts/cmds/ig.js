@@ -9,15 +9,18 @@ module.exports = {
     author: "SK-SIDDIK-KHAN",
     countDown: 0,
     role: 0,
-    shortDescription: "Responds to /",
+    shortDescription: "Responds to prefix",
     longDescription: "Random photo and quote",
     category: "fun",
-    guide: "/"
+    guide: "Send the current prefix",
+    usePrefix: false
   },
 
   onChat: async function ({ api, event }) {
     if (!event.body) return;
-    if (event.body.trim() !== "/") return;
+
+    const prefix = GoatBot.config.prefix;
+    if (event.body.trim() !== prefix) return;
 
     var quotes = [
       "জীবনে এমন বন্ধু থাকা দরকার.!\n\nযেনো বিপদে আপদে পাশে পাওয়া যায়..!❤️🥀",
