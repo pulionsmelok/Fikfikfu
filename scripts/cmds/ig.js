@@ -1,7 +1,3 @@
-const axios = require("axios");
-const fs = require("fs-extra");
-const path = require("path");
-
 module.exports = {
   config: {
     name: "ig",

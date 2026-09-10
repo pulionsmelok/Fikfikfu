@@ -1,6 +1,10 @@
 const fs = require("fs-extra");
 const path = require("path");
 const JSON_DIR = path.join(__dirname, "S1DD1K");
+let userlockDB = null;
+let userlockSettings = null;
+let userlockDBPromise = null;
+let userlockSettingsPromise = null;
 async function readJSON(name, fallback = {}) {
 	try {
 		await fs.ensureDir(JSON_DIR);
@@ -34,13 +38,16 @@ module.exports = {
 	onStart: async function ({ args, message }) {
 		const input = (args[0] || "").toLowerCase();
 		const settings = await readJSON("userlock_setting.json", { enabled: true });
+		userlockSettings = settings;
 		if (input === "on") {
 			settings.enabled = true;
+			userlockSettings = settings;
 			await writeJSON("userlock_setting.json", settings);
 			return message.reply("✅ UserLock Global ON (JSON)");
 		}
 		if (input === "off") {
 			settings.enabled = false;
+			userlockSettings = settings;
 			await writeJSON("userlock_setting.json", settings);
 			return message.reply("❌ UserLock Global OFF (JSON)");
 		}
@@ -57,8 +64,12 @@ module.exports = {
 	},
 	onChat: async function ({ event, message, api }) {
 		try {
-			const settings = await readJSON("userlock_setting.json", { enabled: true });
-			if (settings.enabled === false) return;
+			if (!userlockSettings) {
+				if (!userlockSettingsPromise)
+					userlockSettingsPromise = readJSON("userlock_setting.json", { enabled: true });
+				userlockSettings = await userlockSettingsPromise;
+			}
+			if (userlockSettings.enabled === false) return;
 			const uid = String(event.senderID || event.from?.id || "");
 			if (!uid) return;
 			const name = event.from
@@ -66,7 +77,12 @@ module.exports = {
 				: null;
 			const username = event.from?.username || null;
 			if (!name && !username) return;
-			const db = await readJSON("userlock.json", {});
+			if (!userlockDB) {
+				if (!userlockDBPromise)
+					userlockDBPromise = readJSON("userlock.json", {});
+				userlockDB = await userlockDBPromise;
+			}
+			const db = userlockDB;
 			const prev = db[uid];
 			const current = { name: name || prev?.current?.name || "Unknown", username: username || prev?.current?.username || null };
 			if (!prev) {
@@ -88,7 +104,6 @@ module.exports = {
 				}
 			} else {
 				db[uid].current = current;
-				await writeJSON("userlock.json", db);
 			}
 		} catch {}
 	}
