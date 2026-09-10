@@ -290,8 +290,7 @@ class TelegramApi {
     const result = await requestRaw(`${this.base}/${method}`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-      timeout: 40000,
-    }, body);
+      }, body);
     let json;
     try { json = JSON.parse(result.data.toString("utf8")); } catch (_) { throw new Error("Invalid Telegram response"); }
     if (!json.ok) {
@@ -953,7 +952,6 @@ class TelegramApi {
     try {
       const updates = await this.call("getUpdates", {
         offset: this.offset,
-        timeout: 25,
         allowed_updates: JSON.stringify(["message", "edited_message", "channel_post", "callback_query", "message_reaction", "my_chat_member", "chat_member", "chat_join_request"]),
       });
       for (const update of updates) {
