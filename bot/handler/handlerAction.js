@@ -171,12 +171,19 @@ module.exports = (api, threadModel, userModel, dashBoardModel, globalModel, user
 					}
 				}
 
+				// Keep explicit commands/replies on the critical path.
+				// Always-on hooks start immediately but do not hold up the Telegram update handler.
 				await onStart();
-				await onReply();
-				await onChat();
-				await onLegacyChat();
-				await onLegacyHandleEvent();
-				await onNoPrefix();
+				if (event.type === "message_reply" || event.messageReply)
+					await onReply();
+				else
+					onReply();
+				void Promise.allSettled([
+					onChat(),
+					onLegacyChat(),
+					onLegacyHandleEvent(),
+					onNoPrefix()
+				]);
 
 				// —————————————————— UNSEND SYSTEM —————————————————— //
 				if (event.type === "message_unsend") {
