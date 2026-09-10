@@ -439,8 +439,8 @@ async function onStart() {
 
 			
 			
-			if (command && !usedPrefix && command.config?.usePrefix !== false)
-				return;
+			if (command && !usedPrefix && !prefixMode && command.config?.usePrefix !== false)
+             return;
 			
 			const aliasesData = threadData.data.aliases || {};
 			for (const cmdName in aliasesData) {
