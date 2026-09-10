@@ -1,33 +1,33 @@
 module.exports = {
 	config: {
-        name: "refresh",
-        aliases: [],
-        version: "1.2",
-        author: "SK-SIDDIK-KHAN",
-        countDown: 60,
-        role: 0,
-        usePrefix: true,
-        description: {
-        		vi: "làm mới thông tin nhóm chat hoặc người dùng",
-        		en: "refresh information of group chat or user"
-        	,
-		bn: "refresh information এর গ্রুপ chat অথবা ব্যবহারকারী"},
-        category: "box chat",
-        guide: {
-        		vi: "   {pn} [thread | group]: làm mới thông tin nhóm chat của bạn"
-        			+ "\n   {pn} group <threadID>: làm mới thông tin nhóm chat theo ID"
-        			+ "\n\n   {pn} user: làm mới thông tin người dùng của bạn"
-        			+ "\n   {pn} user [<userID> | @tag]: làm mới thông tin người dùng theo ID",
-        		en: "   {pn} [thread | group]: refresh information of your group chat"
-        			+ "\n   {pn} group <threadID>: refresh information of group chat by ID"
-        			+ "\n\n   {pn} user: refresh information of your user"
-        			+ "\n   {pn} user [<userID> | @tag]: refresh information of user by ID"
-        	,
-		bn: "   {pn} [thread | গ্রুপ]: refresh information এর আপনার গ্রুপ chat"
-        			+ "\n   {pn} গ্রুপ <threadID>: refresh information এর গ্রুপ chat by ID"
-        			+ "\n\n   {pn} ব্যবহারকারী: refresh information এর আপনার ব্যবহারকারী"
-        			+ "\n   {pn} ব্যবহারকারী [<userID> | @tag]: refresh information এর ব্যবহারকারী by ID"},
-    },
+		name: "refresh",
+		aliases: [],
+		version: "1.2",
+		author: "SK-SIDDIK-KHAN",
+		countDown: 5,
+		role: 2,
+		usePrefix: true,
+		description: {
+			vi: "làm mới thông tin nhóm chat hoặc người dùng",
+			en: "refresh information of group chat or user",
+			bn: "refresh information এর গ্রুপ chat অথবা ব্যবহারকারী"
+		},
+		category: "box chat",
+		guide: {
+			vi: "   {pn} [thread | group]: làm mới thông tin nhóm chat của bạn"
+				+ "\n   {pn} group <threadID>: làm mới thông tin nhóm chat theo ID"
+				+ "\n\n   {pn} user: làm mới thông tin người dùng của bạn"
+				+ "\n   {pn} user [<userID> | @tag]: làm mới thông tin người dùng theo ID",
+			en: "   {pn} [thread | group]: refresh information of your group chat"
+				+ "\n   {pn} group <threadID>: refresh information of group chat by ID"
+				+ "\n\n   {pn} user: refresh information of your user"
+				+ "\n   {pn} user [<userID> | @tag]: refresh information of user by ID",
+			bn: "   {pn} [thread | গ্রুপ]: refresh information এর আপনার গ্রুপ chat"
+				+ "\n   {pn} গ্রুপ <threadID>: refresh information এর গ্রুপ chat by ID"
+				+ "\n\n   {pn} ব্যবহারকারী: refresh information এর আপনার ব্যবহারকারী"
+				+ "\n   {pn} ব্যবহারকারী [<userID> | @tag]: refresh information এর ব্যবহারকারী by ID"
+		}
+	},
 
 	langs: {
 		vi: {
@@ -40,6 +40,7 @@ module.exports = {
 			errorRefreshMyUser: "❌ | Đã xảy ra lỗi không thể làm mới thông tin người dùng của bạn",
 			errorRefreshUserTarget: "❌ | Đã xảy ra lỗi không thể làm mới thông tin người dùng %1"
 		},
+
 		en: {
 			refreshMyThreadSuccess: "✅ | Refresh information of your group chat successfully!",
 			refreshThreadTargetSuccess: "✅ | Refresh information of group chat %1 successfully!",
@@ -50,6 +51,7 @@ module.exports = {
 			errorRefreshMyUser: "❌ | Error when refresh information of your user",
 			errorRefreshUserTarget: "❌ | Error when refresh information of user %1"
 		},
+
 		bn: {
 			refreshMyThreadSuccess: "✅ | Refresh information এর আপনার গ্রুপ chat সফলভাবে!",
 			refreshThreadTargetSuccess: "✅ | Refresh information এর গ্রুপ chat %1 সফলভাবে!",
@@ -59,38 +61,122 @@ module.exports = {
 			refreshUserTargetSuccess: "✅ | Refresh information এর ব্যবহারকারী %1 সফলভাবে!",
 			errorRefreshMyUser: "❌ | ত্রুটি when refresh information এর আপনার ব্যবহারকারী",
 			errorRefreshUserTarget: "❌ | ত্রুটি when refresh information এর ব্যবহারকারী %1"
-		
 		}
 	},
 
 	onStart: async function ({ args, threadsData, message, event, usersData, getLang }) {
+
 		if (args[0] == "group" || args[0] == "thread") {
+
+			if (args[1] == "all") {
+				try {
+					const allThreads = await threadsData.getAll();
+					const groups = allThreads.filter(t => t.isGroup || Number(t.threadID) < 0);
+
+					for (const thread of groups) {
+						try {
+							await threadsData.refreshInfo(thread.threadID);
+						}
+						catch (error) {
+							continue;
+						}
+					}
+
+					return message.reply(getLang("refreshThreadTargetSuccess", "all"));
+				}
+				catch (error) {
+					return message.reply(getLang("errorRefreshThreadTarget", "all"));
+				}
+			}
+
 			const targetID = args[1] || event.threadID;
+
 			try {
 				await threadsData.refreshInfo(targetID);
-				return message.reply(targetID == event.threadID ? getLang("refreshMyThreadSuccess") : getLang("refreshThreadTargetSuccess", targetID));
+
+				return message.reply(
+					targetID == event.threadID
+						? getLang("refreshMyThreadSuccess")
+						: getLang("refreshThreadTargetSuccess", targetID)
+				);
 			}
 			catch (error) {
-				return message.reply(targetID == event.threadID ? getLang("errorRefreshMyThread") : getLang("errorRefreshThreadTarget", targetID));
+				return message.reply(
+					targetID == event.threadID
+						? getLang("errorRefreshMyThread")
+						: getLang("errorRefreshThreadTarget", targetID)
+				);
 			}
 		}
+
 		else if (args[0] == "user") {
+
+			if (args[1] == "all") {
+				try {
+					const allUsers = await usersData.getAll();
+
+					for (const user of allUsers) {
+						try {
+							await usersData.refreshInfo(user.userID);
+						}
+						catch (error) {
+							continue;
+						}
+					}
+
+					return message.reply(getLang("refreshUserTargetSuccess", "all"));
+				}
+				catch (error) {
+					return message.reply(getLang("errorRefreshUserTarget", "all"));
+				}
+			}
+
 			let targetID = event.senderID;
+
 			if (args[1]) {
-				if (Object.keys(event.mentions).length)
+				if (event.mentions && Object.keys(event.mentions).length)
 					targetID = Object.keys(event.mentions)[0];
 				else
 					targetID = args[1];
 			}
+
+			if (event.messageReply) {
+				targetID =
+					event.messageReply.senderID ||
+					event.messageReply.userID ||
+					event.messageReply.from?.id ||
+					event.messageReply.from?.user_id ||
+					targetID;
+			}
+			else if (event.reply_to_message) {
+				targetID =
+					event.reply_to_message.senderID ||
+					event.reply_to_message.userID ||
+					event.reply_to_message.from?.id ||
+					event.reply_to_message.from?.user_id ||
+					targetID;
+			}
+
 			try {
 				await usersData.refreshInfo(targetID);
-				return message.reply(targetID == event.senderID ? getLang("refreshMyUserSuccess") : getLang("refreshUserTargetSuccess", targetID));
+
+				return message.reply(
+					targetID == event.senderID
+						? getLang("refreshMyUserSuccess")
+						: getLang("refreshUserTargetSuccess", targetID)
+				);
 			}
 			catch (error) {
-				return message.reply(targetID == event.senderID ? getLang("errorRefreshMyUser") : getLang("errorRefreshUserTarget", targetID));
+				return message.reply(
+					targetID == event.senderID
+						? getLang("errorRefreshMyUser")
+						: getLang("errorRefreshUserTarget", targetID)
+				);
 			}
 		}
-		else
+
+		else {
 			message.SyntaxError();
+		}
 	}
 };
