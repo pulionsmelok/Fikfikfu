@@ -12,14 +12,10 @@ process.env.BLUEBIRD_W_FORGOTTEN_RETURN = 0;
 function validJSON(pathDir) {
 	try {
 		if (!fs.existsSync(pathDir)) throw new Error(`File "${pathDir}" not found`);
-		execSync(`npx jsonlint "${pathDir}"`, { stdio: "pipe" });
+		JSON.parse(fs.readFileSync(pathDir, "utf8"));
 		return true;
 	} catch (err) {
-		let msgError = err.message;
-		msgError = msgError.split("\n").slice(1).join("\n");
-		const indexPos = msgError.indexOf("    at");
-		msgError = msgError.slice(0, indexPos != -1 ? indexPos - 1 : msgError.length);
-		throw new Error(msgError);
+		throw new Error(err.message);
 	}
 }
 
@@ -174,19 +170,29 @@ if (config.autoRestart) {
 	}
 }
 
-(async () => {
-	const { data: { version } } = await axios.get("https://raw.githubusercontent.com/ntkhang03/Goat-Bot-V2/main/package.json");
-	const currentVersion = require("./package.json").version;
-	if (compareVersion(version, currentVersion) === 1) {
-		utils.log.master("NEW VERSION", getText(
-			"Goat",
-			"newVersionDetected",
-			colors.gray(currentVersion),
-			colors.hex("#eb6a07", version),
-			colors.hex("#eb6a07", "node update")
-		));
+// Start the bot without waiting for the optional GitHub version check.
+// A slow/unreachable GitHub endpoint must never delay bot startup.
+require(`./bot/login/login${NODE_ENV === "development" ? ".dev.js" : ".js"}`);
+
+void (async () => {
+	try {
+		const { data: { version } } = await axios.get(
+			"https://raw.githubusercontent.com/ntkhang03/Goat-Bot-V2/main/package.json",
+			{ timeout: 5000 }
+		);
+		const currentVersion = require("./package.json").version;
+		if (compareVersion(version, currentVersion) === 1) {
+			utils.log.master("NEW VERSION", getText(
+				"Goat",
+				"newVersionDetected",
+				colors.gray(currentVersion),
+				colors.hex("#eb6a07", version),
+				colors.hex("#eb6a07", "node update")
+			));
+		}
+	} catch (_) {
+		// Version notification is optional; never affect bot startup.
 	}
-	require(`./bot/login/login${NODE_ENV === "development" ? ".dev.js" : ".js"}`);
 })();
 
 function compareVersion(version1, version2) {
