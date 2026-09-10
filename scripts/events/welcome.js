@@ -47,7 +47,7 @@ async function createBanner(data) {
 		await fs.promises.mkdir(CACHE_DIR, { recursive: true });
 		const bgPath = path.join(CACHE_DIR, `welcome_bg_${randomIndex}.jpg`);
 		if (!fs.existsSync(bgPath)) {
-			const res = await axios({ url: BG_IMAGES[randomIndex], method: "GET", responseType: "arraybuffer", timeout: 20000 });
+			const res = await axios({ url: BG_IMAGES[randomIndex], method: "GET", responseType: "arraybuffer"});
 			fs.writeFileSync(bgPath, Buffer.from(res.data));
 		}
 		const bg = await loadImage(bgPath);
@@ -65,7 +65,7 @@ async function createBanner(data) {
 	async function loadCircleImage(url, x, y, size, glow) {
 		if (!url) return;
 		try {
-			const res = await axios.get(url, { responseType: "arraybuffer", timeout: 10000 });
+			const res = await axios.get(url, { responseType: "arraybuffer"});
 			const img = await loadImage(res.data);
 			ctx.save();
 			ctx.beginPath();

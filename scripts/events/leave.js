@@ -60,7 +60,7 @@ async function createBanner(d) {
 		const i = Math.floor(Math.random() * BG_IMAGES.length);
 		const bgP = path.join(CACHE_DIR, `goodbye_bg_${i}.jpg`);
 		if (!fs.existsSync(bgP)) {
-			const r = await axios({ url: BG_IMAGES[i], method: "GET", responseType: "arraybuffer", timeout: 20000 });
+			const r = await axios({ url: BG_IMAGES[i], method: "GET", responseType: "arraybuffer"});
 			fs.writeFileSync(bgP, Buffer.from(r.data));
 		}
 		const bg = await loadImage(bgP);
@@ -76,7 +76,7 @@ async function createBanner(d) {
 	async function loadCircle(url, x, y, s, glow) {
 		if (!url) return;
 		try {
-			const r = await axios.get(url, { responseType: "arraybuffer", timeout: 10000 });
+			const r = await axios.get(url, { responseType: "arraybuffer"});
 			const img = await loadImage(r.data);
 			ctx.save();
 			ctx.beginPath();
