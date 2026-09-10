@@ -171,8 +171,6 @@ module.exports = (api, threadModel, userModel, dashBoardModel, globalModel, user
 					}
 				}
 
-				// Keep explicit commands/replies on the critical path.
-				// Always-on hooks start immediately but do not hold up the Telegram update handler.
 				await onStart();
 				if (event.type === "message_reply" || event.messageReply)
 					await onReply();

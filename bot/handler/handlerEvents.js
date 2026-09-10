@@ -342,8 +342,6 @@ module.exports = function (api, threadModel, userModel, dashBoardModel, globalMo
 			};
 		}
 		else if (threadData) {
-			// Keep Telegram thread-info refresh off the critical message path.
-			// The cached data is already available; refresh it in the background.
 			if (autoRefreshThreadInfoFirstTime === true && !global.db.receivedTheFirstMessage[threadID]) {
 				global.db.receivedTheFirstMessage[threadID] = true;
 				Promise.resolve(threadsData.refreshInfo(threadID)).catch(err => {
@@ -433,8 +431,6 @@ async function onStart() {
 				const candidate = GoatBot.commands.get(first) || GoatBot.commands.get(GoatBot.aliases.get(first));
 				if (candidate?.config?.usePrefix === false) commandText = trimmedBody;
 			}
-			// A bare prefix (for example "/") is handled by onChat responders.
-			// Do not send a command-not-found request before that responder runs.
 			if (!commandText || trimmedBody === prefix) return;
 			const args = commandText.split(/ +/);
 			
