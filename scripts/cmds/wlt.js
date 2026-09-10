@@ -2,18 +2,20 @@ const { config } = global.GoatBot;
 const { client } = global;
 const { writeFileSync } = require("fs-extra");
 
-config.whiteListModeThread = config.whiteListModeThread || {};
-config.whiteListModeThread.whiteListThreadIds =
-	(config.whiteListModeThread.whiteListThreadIds || []).map(String);
-
 config.whiteListMode = config.whiteListMode || {};
+config.whiteListModeThread = config.whiteListModeThread || {};
+config.hideNotiMessage = config.hideNotiMessage || {};
+
 config.whiteListMode.whiteListIds =
 	(config.whiteListMode.whiteListIds || []).map(String);
 
+config.whiteListModeThread.whiteListThreadIds =
+	(config.whiteListModeThread.whiteListThreadIds || []).map(String);
+
 module.exports = {
 	config: {
-		name: "whitelistthread",
-		aliases: ["wlt", "wt"],
+		name: "wlt",
+		aliases: ["wlonly", "onlywlst", "onlywhitelist", "wl","whitelistthread"],
 		version: "1.5",
 		author: "SK-SIDDIK-KHAN",
 		countDown: 5,
@@ -21,8 +23,8 @@ module.exports = {
 		usePrefix: true,
 
 		description: {
-			en: "Add, remove, edit user and thread whitelist",
-			bn: "User এবং thread whitelist add, remove ও edit করুন"
+			en: "Add, remove and manage user/thread whitelist",
+			bn: "User এবং thread whitelist add, remove ও manage করুন"
 		},
 
 		category: "owner",
@@ -33,17 +35,17 @@ module.exports = {
 				+ "\n   {pn} [add | -a | +]: Add replied user or current thread"
 				+ "\n   {pn} [remove | rm | -r | -] [<uid>]: Remove user"
 				+ "\n   {pn} [remove | rm | -r | -]: Remove replied user or current thread"
-				+ "\n   {pn} [list | -l]: Show whitelist"
+				+ "\n   {pn} [list | -l]: List whitelist"
 				+ "\n   {pn} [on | off]: Turn whitelist mode on/off"
 				+ "\n   {pn} [mode | -m] <on|off>: Turn whitelist mode on/off"
-				+ "\n   {pn} [mode | -m] noti <on|off>: Notification on/off",
+				+ "\n   {pn} [mode | -m] noti <on|off>: Turn notification on/off",
 
 			bn:
 				"   {pn} [যোগ | -a | +] [<uid>]: User whitelist এ add করুন"
 				+ "\n   {pn} [যোগ | -a | +]: Reply করা user অথবা current thread add করুন"
 				+ "\n   {pn} [অপসারণ | rm | -r | -] [<uid>]: User remove করুন"
 				+ "\n   {pn} [অপসারণ | rm | -r | -]: Reply করা user অথবা current thread remove করুন"
-				+ "\n   {pn} [তালিকা | -l]: Whitelist দেখুন"
+				+ "\n   {pn} [তালিকা | -l]: Whitelist list দেখুন"
 				+ "\n   {pn} [on | off]: Whitelist mode চালু/বন্ধ করুন"
 				+ "\n   {pn} [মোড | -m] <on|off>: Whitelist mode চালু/বন্ধ করুন"
 				+ "\n   {pn} [মোড | -m] noti <on|off>: Notification চালু/বন্ধ করুন"
@@ -54,21 +56,25 @@ module.exports = {
 		en: {
 			userAdded:
 				"╭─✦✅ | 𝚄𝚂𝙴𝚁 𝙰𝙳𝙳𝙴𝙳\n"
-				+ "├‣ 𝚄𝚂𝙴𝚁 𝙸𝙳: %1\n"
+				+ "├‣ 𝚄𝚂𝙴𝚁 𝙽𝙰𝙼𝙴: %1\n"
+				+ "├‣ 𝚄𝚂𝙴𝚁 𝙸𝙳: %2\n"
 				+ "╰‣ 𝚂𝚃𝙰𝚃𝚄𝚂: 𝚆𝙷𝙸𝚃𝙴𝙻𝙸𝚂𝚃𝙴𝙳",
 
 			userAlready:
 				"╭─✦⚠️ | 𝚄𝚂𝙴𝚁 𝙰𝙻𝚁𝙴𝙰𝙳𝚈 𝚆𝙷𝙸𝚃𝙴𝙻𝙸𝚂𝚃𝙴𝙳\n"
-				+ "╰‣ 𝚄𝚂𝙴𝚁 𝙸𝙳: %1",
+				+ "├‣ 𝚄𝚂𝙴𝚁 𝙽𝙰𝙼𝙴: %1\n"
+				+ "╰‣ 𝚄𝚂𝙴𝚁 𝙸𝙳: %2",
 
 			userRemoved:
 				"╭─✦✅ | 𝚄𝚂𝙴𝚁 𝚁𝙴𝙼𝙾𝚅𝙴𝙳\n"
-				+ "├‣ 𝚄𝚂𝙴𝚁 𝙸𝙳: %1\n"
+				+ "├‣ 𝚄𝚂𝙴𝚁 𝙽𝙰𝙼𝙴: %1\n"
+				+ "├‣ 𝚄𝚂𝙴𝚁 𝙸𝙳: %2\n"
 				+ "╰‣ 𝚂𝚃𝙰𝚃𝚄𝚂: 𝚁𝙴𝙼𝙾𝚅𝙴𝙳",
 
 			userNotFound:
 				"╭─✦⚠️ | 𝚄𝚂𝙴𝚁 𝙽𝙾𝚃 𝙵𝙾𝚄𝙽𝙳\n"
-				+ "╰‣ 𝚄𝚂𝙴𝚁 𝙸𝙳: %1",
+				+ "├‣ 𝚄𝚂𝙴𝚁 𝙽𝙰𝙼𝙴: %1\n"
+				+ "╰‣ 𝚄𝚂𝙴𝚁 𝙸𝙳: %2",
 
 			threadAdded:
 				"╭─✦✅ | 𝚃𝙷𝚁𝙴𝙰𝙳 𝙰𝙳𝙳𝙴𝙳\n"
@@ -83,7 +89,8 @@ module.exports = {
 
 			threadRemoved:
 				"╭─✦✅ | 𝚃𝙷𝚁𝙴𝙰𝙳 𝚁𝙴𝙼𝙾𝚅𝙴𝙳\n"
-				+ "├‣ 𝚃𝙷𝚁𝙴𝙰𝙳 𝙸𝙳: %1\n"
+				+ "├‣ 𝚃𝙷𝚁𝙴𝙰𝙳 𝙽𝙰𝙼𝙴: %1\n"
+				+ "├‣ 𝚃𝙷𝚁𝙴𝙰𝙳 𝙸𝙳: %2\n"
 				+ "╰‣ 𝚂𝚃𝙰𝚃𝚄𝚂: 𝚁𝙴𝙼𝙾𝚅𝙴𝙳",
 
 			threadNotFound:
@@ -112,21 +119,25 @@ module.exports = {
 		bn: {
 			userAdded:
 				"╭─✦✅ | 𝚄𝚂𝙴𝚁 𝙰𝙳𝙳𝙴𝙳\n"
-				+ "├‣ 𝚄𝚂𝙴𝚁 𝙸𝙳: %1\n"
+				+ "├‣ 𝚄𝚂𝙴𝚁 𝙽𝙰𝙼𝙴: %1\n"
+				+ "├‣ 𝚄𝚂𝙴𝚁 𝙸𝙳: %2\n"
 				+ "╰‣ 𝚂𝚃𝙰𝚃𝚄𝚂: 𝚆𝙷𝙸𝚃𝙴𝙻𝙸𝚂𝚃𝙴𝙳",
 
 			userAlready:
 				"╭─✦⚠️ | 𝚄𝚂𝙴𝚁 𝙰𝙻𝚁𝙴𝙰𝙳𝚈 𝚆𝙷𝙸𝚃𝙴𝙻𝙸𝚂𝚃𝙴𝙳\n"
-				+ "╰‣ 𝚄𝚂𝙴𝚁 𝙸𝙳: %1",
+				+ "├‣ 𝚄𝚂𝙴𝚁 𝙽𝙰𝙼𝙴: %1\n"
+				+ "╰‣ 𝚄𝚂𝙴𝚁 𝙸𝙳: %2",
 
 			userRemoved:
 				"╭─✦✅ | 𝚄𝚂𝙴𝚁 𝚁𝙴𝙼𝙾𝚅𝙴𝙳\n"
-				+ "├‣ 𝚄𝚂𝙴𝚁 𝙸𝙳: %1\n"
+				+ "├‣ 𝚄𝚂𝙴𝚁 𝙽𝙰𝙼𝙴: %1\n"
+				+ "├‣ 𝚄𝚂𝙴𝚁 𝙸𝙳: %2\n"
 				+ "╰‣ 𝚂𝚃𝙰𝚃𝚄𝚂: 𝚁𝙴𝙼𝙾𝚅𝙴𝙳",
 
 			userNotFound:
 				"╭─✦⚠️ | 𝚄𝚂𝙴𝚁 𝙽𝙾𝚃 𝙵𝙾𝚄𝙽𝙳\n"
-				+ "╰‣ 𝚄𝚂𝙴𝚁 𝙸𝙳: %1",
+				+ "├‣ 𝚄𝚂𝙴𝚁 𝙽𝙰𝙼𝙴: %1\n"
+				+ "╰‣ 𝚄𝚂𝙴𝚁 𝙸𝙳: %2",
 
 			threadAdded:
 				"╭─✦✅ | 𝚃𝙷𝚁𝙴𝙰𝙳 𝙰𝙳𝙳𝙴𝙳\n"
@@ -141,7 +152,8 @@ module.exports = {
 
 			threadRemoved:
 				"╭─✦✅ | 𝚃𝙷𝚁𝙴𝙰𝙳 𝚁𝙴𝙼𝙾𝚅𝙴𝙳\n"
-				+ "├‣ 𝚃𝙷𝚁𝙴𝙰𝙳 𝙸𝙳: %1\n"
+				+ "├‣ 𝚃𝙷𝚁𝙴𝙰𝙳 𝙽𝙰𝙼𝙴: %1\n"
+				+ "├‣ 𝚃𝙷𝚁𝙴𝙰𝙳 𝙸𝙳: %2\n"
 				+ "╰‣ 𝚂𝚃𝙰𝚃𝚄𝚂: 𝚁𝙴𝙼𝙾𝚅𝙴𝙳",
 
 			threadNotFound:
@@ -151,7 +163,7 @@ module.exports = {
 			modeOn:
 				"╭─✦✅ | 𝚆𝙷𝙸𝚃𝙴𝙻𝙸𝚂𝚃 𝙼𝙾𝙳𝙴\n"
 				+ "├‣ 𝙼𝙾𝙳𝙴: 𝙾𝙽\n"
-				+ "╰‣ 𝙾𝙽𝙻𝚈 𝚆𝙷𝙸𝚃𝙴𝙻𝙸𝚂𝚃𝙴𝙳 𝚄𝚂𝙴𝚁𝚂/𝚃𝙷𝚁𝙴𝙰𝙳𝚂 𝙲𝙰𝙽 𝚄𝚂𝙴 𝚃𝙷𝙴 𝙱𝙾𝚃",
+				+ "╰‣ 𝚾𝙾𝙽𝙻𝚈 𝚆𝙷𝙸𝚃𝙴𝙻𝙸𝚂𝚃𝙴𝙳 𝚄𝚂𝙴𝚁𝚂/𝚃𝙷𝚁𝙴𝙰𝙳𝚂 𝙲𝙰𝙽 𝚄𝚂𝙴 𝚃𝙷𝙴 𝙱𝙾𝚃",
 
 			modeOff:
 				"╭─✦❎ | 𝚆𝙷𝙸𝚃𝙴𝙻𝙸𝚂𝚃 𝙼𝙾𝙳𝙴\n"
@@ -194,19 +206,33 @@ module.exports = {
 			? String(event.messageReply.senderID)
 			: null;
 
+		const getUserName = async uid => {
+			try {
+				const info = await api.getUserInfo(uid);
+				return info?.[uid]?.name || "Unknown User";
+			} catch (_) {
+				return "Unknown User";
+			}
+		};
+
 		switch (action) {
 			case "add":
 			case "-a":
 			case "+": {
-
 				if (replyUserID) {
+					const name = await getUserName(replyUserID);
+
 					if (
 						config.whiteListMode.whiteListIds.includes(
 							replyUserID
 						)
 					) {
 						return message.reply(
-							getLang("userAlready", replyUserID)
+							getLang(
+								"userAlready",
+								name,
+								replyUserID
+							)
 						);
 					}
 
@@ -214,18 +240,28 @@ module.exports = {
 					saveConfig();
 
 					return message.reply(
-						getLang("userAdded", replyUserID)
+						getLang(
+							"userAdded",
+							name,
+							replyUserID
+						)
 					);
 				}
 
 				const uid = String(args[1] || "").trim();
 
 				if (uid && /^\d+$/.test(uid)) {
+					const name = await getUserName(uid);
+
 					if (
 						config.whiteListMode.whiteListIds.includes(uid)
 					) {
 						return message.reply(
-							getLang("userAlready", uid)
+							getLang(
+								"userAlready",
+								name,
+								uid
+							)
 						);
 					}
 
@@ -233,7 +269,11 @@ module.exports = {
 					saveConfig();
 
 					return message.reply(
-						getLang("userAdded", uid)
+						getLang(
+							"userAdded",
+							name,
+							uid
+						)
 					);
 				}
 
@@ -254,7 +294,10 @@ module.exports = {
 					)
 				) {
 					return message.reply(
-						getLang("threadAlready", tid)
+						getLang(
+							"threadAlready",
+							tid
+						)
 					);
 				}
 
@@ -270,7 +313,11 @@ module.exports = {
 				} catch (_) {}
 
 				return message.reply(
-					getLang("threadAdded", threadName, tid)
+					getLang(
+						"threadAdded",
+						threadName,
+						tid
+					)
 				);
 			}
 
@@ -278,8 +325,9 @@ module.exports = {
 			case "rm":
 			case "-r":
 			case "-": {
-
 				if (replyUserID) {
+					const name = await getUserName(replyUserID);
+
 					const i =
 						config.whiteListMode.whiteListIds.indexOf(
 							replyUserID
@@ -287,7 +335,11 @@ module.exports = {
 
 					if (i === -1) {
 						return message.reply(
-							getLang("userNotFound", replyUserID)
+							getLang(
+								"userNotFound",
+								name,
+								replyUserID
+							)
 						);
 					}
 
@@ -295,19 +347,29 @@ module.exports = {
 					saveConfig();
 
 					return message.reply(
-						getLang("userRemoved", replyUserID)
+						getLang(
+							"userRemoved",
+							name,
+							replyUserID
+						)
 					);
 				}
 
 				const uid = String(args[1] || "").trim();
 
 				if (uid && /^\d+$/.test(uid)) {
+					const name = await getUserName(uid);
+
 					const i =
 						config.whiteListMode.whiteListIds.indexOf(uid);
 
 					if (i === -1) {
 						return message.reply(
-							getLang("userNotFound", uid)
+							getLang(
+								"userNotFound",
+								name,
+								uid
+							)
 						);
 					}
 
@@ -315,7 +377,11 @@ module.exports = {
 					saveConfig();
 
 					return message.reply(
-						getLang("userRemoved", uid)
+						getLang(
+							"userRemoved",
+							name,
+							uid
+						)
 					);
 				}
 
@@ -330,7 +396,10 @@ module.exports = {
 
 				if (i === -1) {
 					return message.reply(
-						getLang("threadNotFound", tid)
+						getLang(
+							"threadNotFound",
+							tid
+						)
 					);
 				}
 
@@ -341,14 +410,25 @@ module.exports = {
 
 				saveConfig();
 
+				let threadName = "Current group/thread";
+
+				try {
+					const info = await api.getThreadInfo(tid);
+					threadName =
+						info?.threadName || threadName;
+				} catch (_) {}
+
 				return message.reply(
-					getLang("threadRemoved", tid)
+					getLang(
+						"threadRemoved",
+						threadName,
+						tid
+					)
 				);
 			}
 
 			case "list":
 			case "-l": {
-
 				const users =
 					config.whiteListMode.whiteListIds;
 
@@ -365,11 +445,25 @@ module.exports = {
 					+ `├‣ 𝚄𝚂𝙴𝚁𝚂: ${users.length}\n`;
 
 				if (users.length) {
+					const userInfo =
+						await Promise.all(
+							users.map(async uid => {
+								const name =
+									await getUserName(uid);
+
+								return {
+									uid,
+									name
+								};
+							})
+						);
+
 					text +=
-						users
+						userInfo
 							.map(
-								id =>
-									`│  ├‣ 𝚄𝙸𝙳: ${id}`
+								({ uid, name }) =>
+									`│  ├‣ 𝚄𝚂𝙴𝚁 𝙽𝙰𝙼𝙴: ${name}\n`
+									+ `│  ╰‣ 𝚄𝚂𝙴𝚁 𝙸𝙳: ${uid}`
 							)
 							.join("\n") + "\n";
 				}
@@ -380,28 +474,32 @@ module.exports = {
 				if (threads.length) {
 					const threadInfo =
 						await Promise.all(
-							threads.map(async id => {
-								let name = "Unfetched";
+							threads.map(async tid => {
+								let name =
+									"Unfetched";
 
 								try {
 									const info =
-										await api.getThreadInfo(id);
+										await api.getThreadInfo(tid);
 
 									name =
 										info?.threadName ||
 										name;
 								} catch (_) {}
 
-								return { id, name };
+								return {
+									tid,
+									name
+								};
 							})
 						);
 
 					text +=
 						threadInfo
 							.map(
-								({ id, name }) =>
+								({ tid, name }) =>
 									`│  ├‣ 𝚃𝙷𝚁𝙴𝙰𝙳 𝙽𝙰𝙼𝙴: ${name}\n`
-									+ `│  ╰‣ 𝚃𝙷𝚁𝙴𝙰𝙳 𝙸𝙳: ${id}`
+									+ `│  ╰‣ 𝚃𝙷𝚁𝙴𝙰𝙳 𝙸𝙳: ${tid}`
 							)
 							.join("\n") + "\n";
 				}
@@ -416,7 +514,6 @@ module.exports = {
 			case "mode":
 			case "m":
 			case "-m": {
-
 				let value;
 
 				if (
@@ -432,7 +529,6 @@ module.exports = {
 				}
 
 				if (value === "noti") {
-
 					const n =
 						String(
 							args[2] || ""
@@ -447,9 +543,6 @@ module.exports = {
 							+ "╰‣ 𝚄𝚂𝙴: /wlt mode noti on/off"
 						);
 					}
-
-					config.hideNotiMessage =
-						config.hideNotiMessage || {};
 
 					config.hideNotiMessage.whiteListModeThread =
 						n !== "on";
@@ -466,7 +559,6 @@ module.exports = {
 				}
 
 				if (value === "on") {
-
 					config.whiteListMode.enable = true;
 					config.whiteListModeThread.enable = true;
 
@@ -478,7 +570,6 @@ module.exports = {
 				}
 
 				if (value === "off") {
-
 					config.whiteListMode.enable = false;
 					config.whiteListModeThread.enable = false;
 
