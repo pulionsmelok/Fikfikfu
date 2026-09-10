@@ -129,6 +129,10 @@ function isBannedOrOnlyAdmin(userData, threadData, senderID, threadID, isGroup, 
 	const panel = config.settingPanel || {};
 	const adminIds = (adminBot || []).map(String);
 	const isBotAdmin = adminIds.includes(String(senderID));
+	if (panel.onlyBotAdmin === true && !isBotAdmin) {
+		if (!silent) message.reply("🔒 Only Bot Admin can use this bot right now.");
+		return true;
+	}
 	if (panel.maintenance === true && !isBotAdmin) {
 		if (!silent) message.reply("🚧 Bot is currently under maintenance. Please try again later.");
 		return true;
