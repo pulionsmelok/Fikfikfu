@@ -61,104 +61,85 @@ module.exports = {
 		}
 	},
 
-	onStart: async function ({ message, args, event, getLang, api, threadID}) {
-		switch (args[0]) {
-			case "add":
-			case "-a":
-			case "+": {
-				let tids = args.slice(1).filter(arg => !isNaN(arg));
-				if (tids.length <= 0) {
-					tids.push(event.threadID);
+	onStart: async function ({ message, args, event, getLang, api, threadID }) {
+		const action = String(args[0] || "").toLowerCase();
+		config.whiteListMode.whiteListIds = (config.whiteListMode.whiteListIds || []).map(String);
+		config.whiteListModeThread.whiteListThreadIds = (config.whiteListModeThread.whiteListThreadIds || []).map(String);
+		const saveConfig = () => writeFileSync(global.client.dirConfig, JSON.stringify(config, null, 2));
+		const replyUserID = event.messageReply?.senderID ? String(event.messageReply.senderID) : null;
+
+		switch (action) {
+			case "add": case "-a": case "+": {
+				if (replyUserID) {
+					if (config.whiteListMode.whiteListIds.includes(replyUserID)) return message.reply(`⚠️ User ${replyUserID} is already whitelisted.`);
+					config.whiteListMode.whiteListIds.push(replyUserID); saveConfig();
+					return message.reply(`✅ User ${replyUserID} has been added to whitelist.`);
 				}
-				const notWLTIDs = [];
-				const threadIDs = [];
-				for (const tid of tids) {
-					if (config.whiteListModeThread.whiteListThreadIds.includes(tid))
-						threadIDs.push(tid);
-					else
-						notWLTIDs.push(tid);
+				const uid = String(args[1] || "").trim();
+				if (uid && /^-?\d+$/.test(uid)) {
+					if (config.whiteListMode.whiteListIds.includes(uid)) return message.reply(`⚠️ User ${uid} is already whitelisted.`);
+					config.whiteListMode.whiteListIds.push(uid); saveConfig();
+					return message.reply(`✅ User ${uid} has been added to whitelist.`);
 				}
-				config.whiteListModeThread.whiteListThreadIds.push(...notWLTIDs);
-				const getNames = await Promise.all(tids.map(async tid => {
-					const d = await api.getThreadInfo(tid) || {}
-	const threadName = d.threadName || "Not found";
-					return { tid, name: threadName };
-				}));
-				writeFileSync(global.client.dirConfig, JSON.stringify(config, null, 2));
-				return message.reply(
-					(notWLTIDs.length > 0 ? getLang("added", notWLTIDs.length, getNames.filter(({ tid }) => notWLTIDs.includes(tid)).map(({ tid, name }) => `├‣ 𝚃𝙷𝚁𝙴𝙰𝙳 𝙽𝙰𝙼𝙴: ${name}\n╰‣ 𝚃𝙷𝚁𝙴𝙰𝙳 𝙸𝙳: ${tid}`).join("\n")) : "")
-					+ (threadIDs.length > 0 ? getLang("alreadyWLT", threadIDs.length, threadIDs.map(tid => `╰‣ 𝚃𝙷𝚁𝙴𝙰𝙳 𝙸𝙳: ${tid}`).join("\n")) : "")
-				);
+				const tid = String(event.threadID || threadID || "").trim();
+				if (!tid) return message.reply("⚠️ Cannot determine current thread ID.");
+				if (config.whiteListModeThread.whiteListThreadIds.includes(tid)) return message.reply(`⚠️ This group/thread (${tid}) is already whitelisted.`);
+				config.whiteListModeThread.whiteListThreadIds.push(tid); saveConfig();
+				let threadName = "Current group/thread";
+				try { const info = await api.getThreadInfo(tid); threadName = info?.threadName || threadName; } catch (_) {}
+				return message.reply(`✅ Group/thread "${threadName}" (${tid}) has been added to whitelist.`);
 			}
-			case "remove":
-			case "rm":
-			case "-r":
-			case "-": {
-				let tids = args.slice(1).filter(arg => !isNaN(arg));
-				if (tids.length <= 0) {
-					tids.push(event.threadID);
+
+			case "remove": case "rm": case "-r": case "-": {
+				if (replyUserID) {
+					const i = config.whiteListMode.whiteListIds.indexOf(replyUserID);
+					if (i === -1) return message.reply(`⚠️ User ${replyUserID} is not whitelisted.`);
+					config.whiteListMode.whiteListIds.splice(i, 1); saveConfig();
+					return message.reply(`✅ User ${replyUserID} has been removed from whitelist.`);
 				}
-				const notWLTIDs = [];
-				const threadIDs = [];
-				for (const tid of tids) {
-					if (config.whiteListModeThread.whiteListThreadIds.includes(tid))
-						threadIDs.push(tid);
-					else
-						notWLTIDs.push(tid);
+				const uid = String(args[1] || "").trim();
+				if (uid && /^-?\d+$/.test(uid)) {
+					const i = config.whiteListMode.whiteListIds.indexOf(uid);
+					if (i === -1) return message.reply(`⚠️ User ${uid} is not whitelisted.`);
+					config.whiteListMode.whiteListIds.splice(i, 1); saveConfig();
+					return message.reply(`✅ User ${uid} has been removed from whitelist.`);
 				}
-				for (const tid of threadIDs)
-					config.whiteListModeThread.whiteListThreadIds.splice(config.whiteListModeThread.whiteListThreadIds.indexOf(tid), 1);
-				const getNames = await Promise.all(threadIDs.map(async tid => {
-					const d = await api.getThreadInfo(tid) || {}
-const threadName = d.threadName || "Not found";
-					return { tid, name: threadName };
-				}));
-				writeFileSync(global.client.dirConfig, JSON.stringify(config, null, 2));
-				return message.reply(
-					(threadIDs.length > 0 ? getLang("removed", threadIDs.length, getNames.map(({ tid, name }) => `├‣ 𝚃𝙷𝚁𝙴𝙰𝙳 𝙽𝙰𝙼𝙴: ${name}\n╰‣ 𝚃𝙷𝚁𝙴𝙰𝙳 𝙸𝙳: ${tid}`).join("\n")) : "")
-					+ (notWLTIDs.length > 0 ? getLang("notAdded", notWLTIDs.length, notWLTIDs.map(tid => `╰‣ 𝚃𝙷𝚁𝙴𝙰𝙳 𝙸𝙳: ${tid}`).join("\n")) : "")
-				);
+				const tid = String(event.threadID || threadID || "").trim();
+				const i = config.whiteListModeThread.whiteListThreadIds.indexOf(tid);
+				if (i === -1) return message.reply(`⚠️ This group/thread (${tid}) is not whitelisted.`);
+				config.whiteListModeThread.whiteListThreadIds.splice(i, 1); saveConfig();
+				return message.reply(`✅ Current group/thread (${tid}) has been removed from whitelist.`);
 			}
-			case "list":
-			case "-l": {
-				const getNames = await Promise.all(config.whiteListModeThread.whiteListThreadIds.map(async tid => {
-					const t = await api.getThreadInfo(tid) || {}
-	const threadName = t.threadName || "Unfetched";
-					return { tid, name: threadName };
-				}));
-				return message.reply(getLang("listWLTs", getNames.map(({ tid, name }) => `├‣ 𝚃𝙷𝚁𝙴𝙰𝙳 𝙽𝙰𝙼𝙴: ${name}\n├‣ 𝚃𝙷𝚁𝙴𝙰𝙳 𝙸𝙳: ${tid}`).join("\n")));
+
+			case "list": case "-l": {
+				const users = config.whiteListMode.whiteListIds, threads = config.whiteListModeThread.whiteListThreadIds;
+				let text = `╭─✦✨ WHITELIST\n├‣ Mode: ${config.whiteListMode.enable === true ? "ON" : "OFF"}\n├‣ Users: ${users.length}\n`;
+				if (users.length) text += users.map(id => `│  ├‣ ${id}`).join("\n") + "\n";
+				text += `├‣ Groups/Threads: ${threads.length}\n`;
+				if (threads.length) text += threads.map(id => `│  ├‣ ${id}`).join("\n") + "\n";
+				return message.reply(text + "╰‣");
 			}
-			case "mode":
-			case "m":
-			case "-m": {
-				let isSetNoti = false;
-				let value;
-				let indexGetVal = 1;
 
-				if (args[1] == "noti") {
-					isSetNoti = true;
-					indexGetVal = 2;
+			case "on": case "enable": case "mode": case "m": case "-m": {
+				let value = action === "mode" || action === "m" || action === "-m" ? String(args[1] || "").toLowerCase() : action;
+				if (value === "on") {
+					config.whiteListMode.enable = true; config.whiteListModeThread.enable = true; saveConfig();
+					return message.reply("✅ Whitelist mode ON. Only whitelisted users/groups can use the bot. Bot admins can always use it.");
 				}
-
-				if (args[indexGetVal] == "on")
-					value = true;
-				else if (args[indexGetVal] == "off")
-					value = false;
-
-				if (isSetNoti) {
-					config.hideNotiMessage.whiteListModeThread = !value;
-					message.reply(getLang(value ? "turnedOnNoti" : "turnedOffNoti"));
+				if (value === "off") {
+					config.whiteListMode.enable = false; config.whiteListModeThread.enable = false; saveConfig();
+					return message.reply("❎ Whitelist mode OFF. Everyone can use the bot.");
 				}
-				else {
-					config.whiteListModeThread.enable = value;
-					message.reply(getLang(value ? "turnedOn" : "turnedOff"));
+				if (value === "noti") {
+					const n = String(args[2] || "").toLowerCase();
+					if (n !== "on" && n !== "off") return message.reply("⚠️ Use /wlt mode noti on or /wlt mode noti off.");
+					config.hideNotiMessage.whiteListModeThread = n !== "on"; saveConfig();
+					return message.reply(n === "on" ? getLang("turnedOnNoti") : getLang("turnedOffNoti"));
 				}
-
-				writeFileSync(client.dirConfig, JSON.stringify(config, null, 2));
-				break;
+				return message.reply("⚠️ Use /wlt on or /wlt off.");
 			}
 			default:
-				return message.reply(getLang("missingTIDAdd"));
+				return message.reply("Usage: /wlt on | /wlt off | /wlt add <UID> | /wlt remove <UID> | reply /wlt add/remove | /wlt add/remove (current group) | /wlt list");
 		}
 	}
 };
