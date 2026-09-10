@@ -90,5 +90,16 @@
     "timeRestart": 3600000,
     "delayAfterStopListening": 2000,
     "logNoti": true
+  },
+  "settingPanel": {
+    "maintenance": false,
+    "onlyBotAdmin": false,
+    "antilink": false,
+    "spammute": false,
+    "cooldown": false,
+    "autoReact": false,
+    "alwaysEmoji": false,
+    "welcome": true,
+    "leave": true
   }
 }
