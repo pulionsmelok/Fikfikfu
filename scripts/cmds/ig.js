@@ -1,7 +1,3 @@
-const axios = require("axios");
-const fs = require("fs-extra");
-const path = require("path");
-
 module.exports = {
   config: {
     name: "ig",
@@ -22,14 +18,14 @@ module.exports = {
     const prefix = GoatBot.config.prefix;
     if (event.body.trim() !== prefix) return;
 
-    var quotes = [
+    const quotes = [
       "জীবনে এমন বন্ধু থাকা দরকার.!\n\nযেনো বিপদে আপদে পাশে পাওয়া যায়..!❤️🥀",
       "শখের বয়সে টাকার অভাব থাকে 🙂💔\n\nতখন পাশে নারী ওহ্ থাকে না 😅",
       "প্রিয় মানুষটার কথা ভাবতে ভাবতে হঠাৎ হেসে ফেলার অনুভূতি টা সুন্দর!🖤🌸",
       "মন থেকে ভালোবাসা পূর্ণতা পাক, 💖 নাটকীয় ভালোবাসা থেকে মানুষ মুক্তি পাক!🙂🌸✨🔐"
     ];
 
-    var images = [
+    const images = [
       "https://i.postimg.cc/L4Cx5RKH/9e67645f927eaae0ba18f19b05622eac.jpg",
       "https://i.postimg.cc/7YXT11nD/780eb0e434ce5ca92e863a92e6cb27cf.jpg",
       "https://i.postimg.cc/1Xsfw4gf/2d1bcd832d2efb496e53cb45190e5325.jpg",
@@ -43,44 +39,17 @@ module.exports = {
       "https://i.postimg.cc/rwQ3LHGb/d13da3cb14a9630bf859795c26a2c972.jpg"
     ];
 
-    var quote = quotes[Math.floor(Math.random() * quotes.length)];
-    var imageUrl = images[Math.floor(Math.random() * images.length)];
-
-    var cacheDir = path.join(__dirname, "cache");
-    await fs.ensureDir(cacheDir);
-
-    var filePath = path.join(
-      cacheDir,
-      "ig_" + Date.now() + ".jpg"
-    );
+    const quote = quotes[Math.floor(Math.random() * quotes.length)];
+    const imageUrl = images[Math.floor(Math.random() * images.length)];
 
     try {
-      var response = await axios.get(imageUrl, {
-        responseType: "arraybuffer",
-        timeout: 60000
+     
+      await api.sendPhoto(event.threadID, imageUrl, {
+        caption: quote,
+        reply_to_message_id: event.messageID
       });
-
-      await fs.writeFile(filePath, response.data);
-
-      await api.sendMessage(
-        {
-          body: quote,
-          attachment: fs.createReadStream(filePath)
-        },
-        event.threadID,
-        null,
-        event.messageID
-      );
     } catch (error) {
-      console.error("IG Error:", error);
-    }
-
-    try {
-      if (await fs.pathExists(filePath)) {
-        await fs.remove(filePath);
-      }
-    } catch (error) {
-      console.error("Cache Error:", error);
+      console.error("IG Error:", error?.message || error);
     }
   }
 };
