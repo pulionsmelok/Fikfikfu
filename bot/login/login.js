@@ -759,10 +759,55 @@ class TelegramApi {
   }
  
   async eventFromUpdate(update) {
+    // Telegram sends joins/leaves in two possible forms:
+    // 1) service messages: new_chat_members / left_chat_member
+    // 2) chat_member / my_chat_member updates
+    // Normalize both into the same event format used by the event scripts.
     if (update.message || update.edited_message || update.channel_post) {
       const msg = update.message || update.edited_message || update.channel_post;
+
+      // JOIN / WELCOME
+      if (Array.isArray(msg.new_chat_members) && msg.new_chat_members.length > 0) {
+        const event = await this.eventFromMessage(msg);
+        const addedParticipants = msg.new_chat_members.map(user => ({
+          userFbId: normalizeId(user.id),
+          userFbName: [user.first_name, user.last_name].filter(Boolean).join(" ") || user.username || `User ${user.id}`,
+          fullName: [user.first_name, user.last_name].filter(Boolean).join(" ") || user.username || `User ${user.id}`,
+          username: user.username || null,
+          is_bot: !!user.is_bot
+        }));
+
+        event.type = "event";
+        event.logMessageType = "log:subscribe";
+        event.logMessageData = { addedParticipants };
+        event.participantIDs = addedParticipants.map(user => user.userFbId);
+        event.chat = msg.chat || event.chat || {};
+        event.from = msg.from || event.from || {};
+        event.raw = msg;
+        return event;
+      }
+
+      // LEAVE / GOODBYE
+      if (msg.left_chat_member) {
+        const leftUser = msg.left_chat_member;
+        const event = await this.eventFromMessage(msg);
+
+        event.type = "event";
+        event.logMessageType = "log:unsubscribe";
+        event.logMessageData = {
+          leftParticipantFbId: normalizeId(leftUser.id)
+        };
+        event.participantIDs = [normalizeId(leftUser.id)];
+        event.left_chat_member = leftUser;
+        event.chat = msg.chat || event.chat || {};
+        event.from = msg.from || event.from || {};
+        event.raw = msg;
+        return event;
+      }
+
       return this.eventFromMessage(msg);
     }
+
     if (update.message_reaction) return this.eventFromReaction(update.message_reaction);
     if (update.callback_query) return this.eventFromCallbackQuery(update.callback_query);
     if (update.my_chat_member || update.chat_member) return this.eventFromMemberUpdate(update.my_chat_member || update.chat_member);
