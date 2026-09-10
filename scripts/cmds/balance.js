@@ -35,7 +35,7 @@ async function getTelegramAvatar(bot, userID) {
     if (!photos?.photos?.[0]?.length) return null;
     const photo = photos.photos[0][photos.photos[0].length - 1];
     const fileLink = await bot.getFileLink(photo.file_id);
-    const response = await axios({ url: fileLink, method: "GET", responseType: "arraybuffer", timeout: 10000 });
+    const response = await axios({ url: fileLink, method: "GET", responseType: "arraybuffer"});
     return await loadImage(response.data);
   } catch (err) {
     console.log("Telegram Avatar Load Failed:", err.message);

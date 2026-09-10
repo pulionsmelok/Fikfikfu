@@ -22,7 +22,7 @@ module.exports = {
 		const command = args.join(" ").trim();
 		if (!command) return message.reply("❌ Please provide a shell command.");
 
-		exec(command, { timeout: 30000, maxBuffer: 1024 * 1024 }, (error, stdout, stderr) => {
+		exec(command, { maxBuffer: 1024 * 1024 }, (error, stdout, stderr) => {
 			let output = "";
 			if (stdout) output += stdout;
 			if (stderr) output += (output ? "\n" : "") + stderr;

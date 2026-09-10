@@ -36,9 +36,7 @@ module.exports = {
     const fileUrl = await api.getFileLink(photo.file_id);
 
     const response = await axios.get(fileUrl, {
-      responseType: "arraybuffer",
-      timeout: 30000
-    });
+      responseType: "arraybuffer"});
 
     return Buffer.from(response.data);
   },
@@ -76,9 +74,7 @@ module.exports = {
       "https://drive.google.com/uc?export=download&id=127abSHy13rjpOSwpLIlFc2lGbeJQQRjW";
 
     const response = await axios.get(backgroundUrl, {
-      responseType: "arraybuffer",
-      timeout: 30000
-    });
+      responseType: "arraybuffer"});
 
     const background = await Jimp.read(
       Buffer.from(response.data)

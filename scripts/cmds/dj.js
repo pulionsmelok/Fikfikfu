@@ -54,7 +54,6 @@ module.exports = {
             url: audioURL,
             method: "GET",
             responseType: "stream",
-            timeout: 30000,
             maxContentLength: 50 * 1024 * 1024,
             headers: {
               "User-Agent": "Mozilla/5.0"

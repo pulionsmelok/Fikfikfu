@@ -90,7 +90,6 @@ module.exports = {
 
       const response = await axios.get(result.imageUrl, {
         responseType: "arraybuffer",
-        timeout: 120000,
         maxContentLength: Infinity,
         maxBodyLength: Infinity
       });

@@ -92,9 +92,7 @@ async function getTelegramAvatar(telegram, userID) {
   const fileURL = await telegram.getFileLink(photo.file_id);
 
   const response = await axios.get(fileURL, {
-    responseType: "arraybuffer",
-    timeout: 30000
-  });
+    responseType: "arraybuffer"});
 
   return Buffer.from(response.data);
 }
@@ -125,9 +123,7 @@ async function generateProposalImage(
     "https://drive.google.com/uc?export=download&id=11MyfMu0iXbGuxCvoMwNGcEPPMa8SDnXG";
 
   const response = await axios.get(backgroundURL, {
-    responseType: "arraybuffer",
-    timeout: 30000
-  });
+    responseType: "arraybuffer"});
 
   const background = await Jimp.read(
     Buffer.from(response.data)

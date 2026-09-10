@@ -60,7 +60,6 @@ module.exports = {
             url: imgURL,
             method: "GET",
             responseType: "stream",
-            timeout: 15000,
             maxContentLength: 10 * 1024 * 1024,
             headers: {
               "User-Agent": "Mozilla/5.0"

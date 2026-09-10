@@ -54,9 +54,7 @@ module.exports = {
       `https://api.telegram.org/file/bot${token}/${file.file_path}`;
 
     const response = await axios.get(fileUrl, {
-      responseType: "arraybuffer",
-      timeout: 30000
-    });
+      responseType: "arraybuffer"});
 
     return Buffer.from(response.data);
   },
@@ -94,9 +92,7 @@ module.exports = {
       "https://drive.google.com/uc?export=download&id=11TPaOEF6IjxpY6yMlfLgIip-X99MrQpJ";
 
     const response = await axios.get(backgroundUrl, {
-      responseType: "arraybuffer",
-      timeout: 30000
-    });
+      responseType: "arraybuffer"});
 
     const background = await Jimp.read(
       Buffer.from(response.data)

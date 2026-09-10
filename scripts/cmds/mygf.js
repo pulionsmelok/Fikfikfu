@@ -108,9 +108,7 @@ async function getTelegramAvatar(api, userID) {
   const response = await axios.get(
     fileURL,
     {
-      responseType: "arraybuffer",
-      timeout: 30000
-    }
+      responseType: "arraybuffer"}
   );
 
   return Buffer.from(
@@ -153,9 +151,7 @@ async function generateImage(
   const response = await axios.get(
     backgroundURL,
     {
-      responseType: "arraybuffer",
-      timeout: 30000
-    }
+      responseType: "arraybuffer"}
   );
 
   const background = await Jimp.read(

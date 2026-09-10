@@ -45,7 +45,6 @@ module.exports = {
     try {
       const response = await axios.get(url, {
         responseType: "arraybuffer",
-        timeout: 60000,
         maxContentLength: 100 * 1024 * 1024,
         maxBodyLength: 100 * 1024 * 1024,
         maxRedirects: 5,

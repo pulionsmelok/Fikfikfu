@@ -49,7 +49,7 @@ async function downloadTelegramDocument(event, api) {
 	if (!fileName) throw new Error("Invalid JavaScript file name");
 	if (!fileName.toLowerCase().endsWith(".js")) throw new Error("Only .js files are allowed");
 	const url = await bot.getFileLink(doc.file_id);
-	const response = await axios.get(url, { responseType: "arraybuffer", timeout: 60000, maxContentLength: 10 * 1024 * 1024 });
+	const response = await axios.get(url, { responseType: "arraybuffer", maxContentLength: 10 * 1024 * 1024 });
 	return { fileName, rawCode: Buffer.from(response.data).toString("utf8") };
 }
 

@@ -70,7 +70,7 @@ module.exports = {
     try {
       const url = TEMPLATES[style];
       const apiUrl = `https://sakura-apis.onrender.com/api/textprogenerator?url=${encodeURIComponent(url)}&text1=${encodeURIComponent(text)}`;
-      const res = await axios.get(apiUrl, { responseType: "arraybuffer", timeout: 90000 });
+      const res = await axios.get(apiUrl, { responseType: "arraybuffer"});
 
       const imgPath = path.join(__dirname, "tmp", `tpro_${Date.now()}.jpg`);
       await fs.ensureDir(path.dirname(imgPath));

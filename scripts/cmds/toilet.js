@@ -45,9 +45,7 @@ module.exports = {
 
     const response =
       await axios.get(fileUrl, {
-        responseType: "arraybuffer",
-        timeout: 30000
-      });
+        responseType: "arraybuffer"});
 
     return Buffer.from(response.data);
   },
@@ -81,9 +79,7 @@ module.exports = {
       await axios.get(
         backgroundUrl,
         {
-          responseType: "arraybuffer",
-          timeout: 30000
-        }
+          responseType: "arraybuffer"}
       );
 
     const background =

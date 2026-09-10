@@ -63,7 +63,6 @@ module.exports = {
               hostname: domain,
               method: "HEAD",
               port: 443,
-              timeout: 5000,
               rejectUnauthorized: true
             },
             () => {
@@ -90,7 +89,6 @@ module.exports = {
         const start = Date.now();
 
         const res = await axios.get(url, {
-          timeout: 10000,
           maxRedirects: 5,
           validateStatus: () => true
         });

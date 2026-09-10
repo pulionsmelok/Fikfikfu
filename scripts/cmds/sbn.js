@@ -50,7 +50,6 @@ module.exports = {
 
       const response = await axios.get(url, {
         responseType: "arraybuffer",
-        timeout: 30000,
         headers: {
           "User-Agent": "Mozilla/5.0 (Android 13; Mobile)"
         }

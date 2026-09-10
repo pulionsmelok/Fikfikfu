@@ -73,7 +73,6 @@ module.exports = {
           method: "GET",
           url: attachment.url,
           responseType: "stream",
-          timeout: 180000,
           maxContentLength: Infinity,
           maxBodyLength: Infinity
         });
@@ -109,7 +108,6 @@ module.exports = {
             form,
             {
               headers: form.getHeaders(),
-              timeout: 300000,
               maxContentLength: Infinity,
               maxBodyLength: Infinity,
               validateStatus: () => true
@@ -148,7 +146,6 @@ module.exports = {
               litterForm,
               {
                 headers: litterForm.getHeaders(),
-                timeout: 300000,
                 maxContentLength: Infinity,
                 maxBodyLength: Infinity,
                 validateStatus: () => true

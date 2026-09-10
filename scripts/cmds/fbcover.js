@@ -40,7 +40,7 @@ fbcover SK SIDDIK | 20 | Dhaka | mail@x.com | fb/x | Developer`
 			let ok = false;
 			for (const u of apis) {
 				try {
-					const res = await axios.get(u, { responseType: "arraybuffer", timeout: 20000 });
+					const res = await axios.get(u, { responseType: "arraybuffer"});
 					await fs.writeFile(out, Buffer.from(res.data));
 					ok = true;
 					break;

@@ -37,9 +37,7 @@ module.exports = {
             entity: "song",
             limit: 1,
             country: "US"
-          },
-          timeout: 15000
-        }
+          }}
       );
 
       const data = response.data;
