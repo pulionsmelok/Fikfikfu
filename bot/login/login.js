@@ -1088,16 +1088,13 @@ function isWhitelisted(event) {
   const thread = normalizeId(event.threadID);
   const admins = (cfg.adminBot || []).map(normalizeId);
   if (admins.includes(sender)) return true;
- 
-  const userMode = cfg.whiteListMode?.enable === true;
-  const threadMode = cfg.whiteListModeThread?.enable === true;
+
+  const whitelistEnabled = cfg.whiteListMode?.enable === true;
+  if (!whitelistEnabled) return true;
+
   const userOK = (cfg.whiteListMode?.whiteListIds || []).map(normalizeId).includes(sender);
   const threadOK = (cfg.whiteListModeThread?.whiteListThreadIds || []).map(normalizeId).includes(thread);
- 
-  if (userMode && threadMode) return userOK || threadOK;
-  if (userMode) return userOK;
-  if (threadMode) return threadOK;
-  return true;
+  return userOK || threadOK;
 }
  
 async function stopListening(api) {
