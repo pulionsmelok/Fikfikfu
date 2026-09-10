@@ -553,17 +553,14 @@ async function onStart() {
 async function onChat() {
 			const allOnChat = GoatBot.onChat || [];
 			const args = body ? body.split(/ +/) : [];
+			const tasks = [];
+
 			for (const key of new Set(allOnChat)) {
 				const command = GoatBot.commands.get(key);
-				if (!command)
-					continue;
+				if (!command) continue;
 				const commandName = command.config.name;
-
-				
 				const roleConfig = getRoleConfig(utils, command, isGroup, threadData, commandName);
-				const needRole = roleConfig.onChat;
-				if (needRole > role)
-					continue;
+				if (roleConfig.onChat > role) continue;
 
 				const getText2 = createGetText2(langCode, `${process.cwd()}/languages/cmds/${langCode}.js`, prefix, command);
 				const time = getTime("DD/MM/YYYY HH:mm:ss");
@@ -574,30 +571,24 @@ async function onChat() {
 					continue;
 				}
 
-				try {
-					const handler = await command.onChat.call(command, {
-						...parameters,
-						isUserCallCommand,
-						args,
-						commandName,
-						getLang: getText2
-					});
-					if (typeof handler === "function")
-						await handler();
-				}
-				catch (err) {
-					const time = getTime("DD/MM/YYYY HH:mm:ss");
-					log.err("onChat", `An error occurred when calling the command onChat ${commandName}`, err);
+				tasks.push((async () => {
 					try {
-						await message.reply(utils.getText({ lang: langCode, head: "handlerEvents" }, "errorOccurred2", time, commandName, removeHomeDir(err.stack ? err.stack.split("\n").slice(0, 5).join("\n") : JSON.stringify(err, null, 2))));
+						const handler = await command.onChat.call(command, {
+							...parameters, isUserCallCommand, args, commandName, getLang: getText2
+						});
+						if (typeof handler === "function") await handler();
+					} catch (err) {
+						log.err("onChat", `An error occurred when calling the command onChat ${commandName}`, err);
+						try {
+							await message.reply(utils.getText({ lang: langCode, head: "handlerEvents" }, "errorOccurred2", time, commandName, removeHomeDir(err.stack ? err.stack.split("\n").slice(0, 5).join("\n") : JSON.stringify(err, null, 2))));
+						} catch (_) {}
 					}
-					catch (_) {}
-				}
+				})());
 			}
+
+			await Promise.allSettled(tasks);
 		}
 
-
-		
 		// ———————————————— ON ANY EVENT ———————————————— //
 async function onAnyEvent() {
 			const allOnAnyEvent = GoatBot.onAnyEvent || [];
