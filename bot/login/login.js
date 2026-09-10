@@ -440,6 +440,10 @@ class TelegramApi {
     delete fields.reply_to_message_id;
     if (options.reply_to_message_id) fields.reply_parameters = { message_id: Number(options.reply_to_message_id) };
     const value = photo?.source || photo?.path || photo?.url || photo?.file_id || photo?.fileID || photo;
+    if (typeof value === "string" && /^https?:\/\//i.test(value)) {
+      fields.photo = value;
+      return this.call("sendPhoto", fields);
+    }
     const file = await this._prepareMedia(value, "photo", "photo.jpg");
     if (file) return this._sendMediaMultipart("sendPhoto", fields, file);
     fields.photo = typeof value === "string" ? value : String(value || "");
@@ -451,6 +455,10 @@ class TelegramApi {
     delete fields.reply_to_message_id;
     if (options.reply_to_message_id) fields.reply_parameters = { message_id: Number(options.reply_to_message_id) };
     const value = video?.source || video?.path || video?.url || video?.file_id || video?.fileID || video;
+    if (typeof value === "string" && /^https?:\/\//i.test(value)) {
+      fields.video = value;
+      return this.call("sendVideo", fields);
+    }
     const file = await this._prepareMedia(value, "video", "video.mp4");
     if (file) return this._sendMediaMultipart("sendVideo", fields, file);
     fields.video = typeof value === "string" ? value : String(value || "");
